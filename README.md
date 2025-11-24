@@ -70,6 +70,27 @@ DESCRIBE FORMATTED default.managed_countries;
 SHOW CREATE TABLE default.managed_countries;
 ```
 
+## 2. Understanding Iceberg Storage
+
+Iceberg manages both data and metadata directories within the table's storage path.
+
+*   **`data/`:** Contains the actual table data files.
+*   **`metadata/`:** Contains snapshots, schema history, and manifest files.
+
+Iceberg manages partitioning and versioning using the `metadata/` directory, without relying on Hive Metastore.
+
+### Understanding the Metadata Files
+
+Iceberg uses several types of metadata files to track table state and manage partitions:
+
+| File Type | Format/Data Type | Purpose |
+| :--- | :--- | :--- |
+| **Metadata JSON Files** (`*.metadata.json`) | JSON (human-readable) | Stores table-level metadata such as schema, partitioning, snapshots, and file references. A new file is generated each time the table structure changes, retaining older files for time travel and rollback. |
+| **Manifest List Files** (`*-m0.avro`) | Apache Avro (binary) | Stores a list of manifest files associated with a snapshot, helping Iceberg quickly determine which data files belong to which snapshot. Avro is used for compaction and efficient file tracking. |
+| **Snapshot Files** (`snap-*.avro`) | Apache Avro (binary) | Tracks table state at a specific point in time (snapshot ID, timestamp, manifest list, etc.). Enables fast lookup of previous states for Iceberg’s time travel feature. |
+
+These files work together: the Metadata JSON file defines the schema and references snapshots; Snapshot files link to manifest lists; and Manifest list files reference manifest files detailing individual data files.
+
 ## 2. Iceberg Table Types (COW and MOR)
 
 Iceberg tables support different storage strategies to balance performance, storage efficiency, and query speed.
@@ -159,26 +180,7 @@ WHERE team_id = 'T003'
 """)
 ```
 
-## 4. Understanding Iceberg Storage and Metadata
 
-Iceberg manages both data and metadata directories within the table's storage path.
-
-*   **`data/`:** Contains the actual table data files.
-*   **`metadata/`:** Contains snapshots, schema history, and manifest files.
-
-Iceberg manages partitioning and versioning using the `metadata/` directory, without relying on Hive Metastore.
-
-### Understanding the Metadata Files
-
-Iceberg uses several types of metadata files to track table state and manage partitions:
-
-| File Type | Format/Data Type | Purpose |
-| :--- | :--- | :--- |
-| **Metadata JSON Files** (`*.metadata.json`) | JSON (human-readable) | Stores table-level metadata such as schema, partitioning, snapshots, and file references. A new file is generated each time the table structure changes, retaining older files for time travel and rollback. |
-| **Manifest List Files** (`*-m0.avro`) | Apache Avro (binary) | Stores a list of manifest files associated with a snapshot, helping Iceberg quickly determine which data files belong to which snapshot. Avro is used for compaction and efficient file tracking. |
-| **Snapshot Files** (`snap-*.avro`) | Apache Avro (binary) | Tracks table state at a specific point in time (snapshot ID, timestamp, manifest list, etc.). Enables fast lookup of previous states for Iceberg’s time travel feature. |
-
-These files work together: the Metadata JSON file defines the schema and references snapshots; Snapshot files link to manifest lists; and Manifest list files reference manifest files detailing individual data files.
 
 ## 5. Schema and Partition Evolution
 
