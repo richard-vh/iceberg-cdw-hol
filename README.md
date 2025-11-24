@@ -25,19 +25,19 @@ This document explores some of the core features of Apache Iceberg, including ta
 An **Iceberg Table** is a table where Iceberg manages both the metadata and the data itself. It is a fully integrated table that Iceberg can track and manage. When you drop an Iceberg Table, both the metadata and the data are removed.
 
 ### Use an Iceberg Table when:
-*   You need Iceberg to fully handle both the data and metadata.
-*   You want to manage the entire lifecycle of the table automatically.
-*   You require atomic operations, such as partition evolution, schema evolution, and time travel.
+* You need Iceberg to fully handle both the data and metadata.
+* You want to manage the entire lifecycle of the table automatically.
+* You require atomic operations, such as partition evolution, schema evolution, and time travel.
 
 ### Key Benefits and Limitations
 
 **Benefits:** 
-- Simplified data management.
-- Automatic metadata handling.
-- Built-in features like time travel and schema evolution.
+* Simplified data management.
+* Automatic metadata handling.
+* Built-in features like time travel and schema evolution.
 
 **Limitations:** 
-- Dropping the table automatically deletes all data.
+* Dropping the table automatically deletes all data.
 
 
 > [!NOTE]
