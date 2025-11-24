@@ -7,15 +7,16 @@ This document explores some of the core features of Apache Iceberg, including ta
 ## Table of Contents
 
 1.  [Creating Iceberg Tables](#1-creating-iceberg-tables)
-2.  [Iceberg Table Types (COW and MOR)](#2-iceberg-table-types-cow-and-mor)
+2.  [Understanding Iceberg Storage](#2-understanding-iceberg-storage)
 3.  [Inserts, Updates, and Deletes](#3-inserts-updates-and-deletes)
-4.  [Understanding Iceberg Storage and Metadata](#4-understanding-iceberg-storage-and-metadata)
-5.  [Schema and Partition Evolution](#5-schema-and-partition-evolution)
-6.  [Time Travel and Rollbacks](#6-time-travel-and-rollbacks)
-7.  [Branching and Merging](#7-branching-and-merging)
-8.  [Tagging (Versioning)](#8-tagging-versioning)
-9.  [Migration and Maintenance](#9-migration-and-maintenance)
-10. [Useful Links](#10-useful-links)
+4.  [Iceberg Table Types (COW and MOR)](#4-iceberg-table-types-cow-and-mor)
+7.  [Schema and Partition Evolution](#5-schema-and-partition-evolution)
+8.  [Time Travel and Rollbacks](#6-time-travel-and-rollbacks)
+9.  [Branching and Merging](#7-branching-and-merging)
+10. [Tagging (Versioning)](#8-tagging-versioning)
+11. [Table Migration](#9-table-migration)
+12. [Table Maintenance](#10-table-maintenance)
+13. [Useful Links](#11-useful-links)
 
 ---
 
@@ -38,41 +39,6 @@ An **Iceberg Table** is a table where Iceberg manages both the metadata and the 
 **Note:** By default, when creating an Iceberg table, it will be a **Copy-on-Write (COW)** table. You can explicitly specify the table type as Copy-on-Write (COW) or Merge-on-Write (MOR) using table properties.
 
 ### Table Creation Example
-
-#### SPARK
-
-```sql
-# Drop the table if it exists
-spark.sql("""
-DROP TABLE IF EXISTS default.managed_countries
-""")
-
-# Create an Iceberg table for European countries (COW by default)
-spark.sql("""
-CREATE TABLE default.managed_countries (
-country_code STRING,
-country_name STRING,
-population INT,
-area DOUBLE
-)
-USING iceberg
-""")
-
-# Insert data into the table
-spark.sql("""
-INSERT INTO default.managed_countries VALUES
-('FR', 'France', 67391582, 643801.0),
-('DE', 'Germany', 83149300, 357022.0),
-('IT', 'Italy', 60262770, 301340.0)
-""")
-# Read data from the table
-df = spark.sql("SELECT * FROM default.managed_countries")
-df.show()
-
-# Describe the table structure
-spark.sql("DESCRIBE default.managed_countries").show()
-```
-The Spark code also demonstrates showing the table creation script and table properties.
 
 #### IMPALA
 
