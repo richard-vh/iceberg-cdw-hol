@@ -1,0 +1,84 @@
+site_name: "Getting Started with Iceberg on Cloudera"
+site_author: GOES
+copyright: 2025 Cloudera, Inc. All rights reserved.<br><a href="https://www.cloudera.com/legal/terms-and-conditions.html" target="_blank">Terms & Conditions | </a>  <a href="https://www.cloudera.com/legal/policies.html" target="_blank"> Privacy Policy and Data Policy</a>
+repo_url: https://github.com/richard-vh/iceberg-cdw-hol
+repo_name: richard-vh/iceberg-cdw-hol
+
+theme:
+    name: material
+    logo: assets/images/logo-cloudera-white.svg
+    favicon: assets/images/favicon.ico
+    palette:
+    - scheme: slate
+      primary: custom
+      accent: custom
+      toggle:
+        name: Switch to light mode
+        icon: material/weather-sunny
+    - scheme: default
+      primary: custom
+      accent: custom
+      toggle:
+        name: Switch to dark mode
+        icon: material/weather-night
+    features:
+    - content.code.annotate
+    - content.code.copy
+    # - navigation.expand
+    # - navigation.indexes
+    # - navigation.sections
+    - navigation.footer    
+    - navigation.top
+    - toc.integrate
+
+docs_dir: '../../content'
+site_dir: './build'
+# not_in_nav: |
+extra_css:
+  - assets/stylesheets/extra.css
+use_directory_urls: false
+extra:
+  generator: false
+
+nav:
+    - Iceberg on Cloudera:
+        - Module 1 Getting Started with Iceberg: 'README.md'
+
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - pymdownx.blocks.html
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true  
+  - pymdownx.tasklist:
+      custom_checkbox: true  
+  - sane_lists: {}
+  - toc:
+      toc_depth: 3
+
+plugins:
+  - same-dir # to allow site_dir to be within docs_dir
+  - search
+  - markdownextradata: {}
+  # - with-pdf:
+  #     custom_template_path: templates
+  #     debug_html: false
+  #     output_path: exercise_guide.pdf
+  - glightbox
+  - macros
+#   - macros:
+#       include_yaml:
+#         - template_data/data.yml
