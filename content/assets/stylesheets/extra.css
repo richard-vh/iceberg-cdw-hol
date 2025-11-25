@@ -89,6 +89,8 @@
     border-radius: 3px;
     flex-grow: 1; /* Input takes available space */
     background-color: white;
+    color: black;
+    font-size: large;
 }
 
 .username-input-container button {
