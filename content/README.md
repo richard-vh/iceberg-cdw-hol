@@ -266,6 +266,8 @@ Copy-on-Write (COW) is where instead of modifying data directly, the system crea
 
 !!! tip "IMPALA"
     ```sql
+    DROP TABLE IF EXISTS default.cow_european_countries;
+    
     CREATE TABLE default.cow_european_countries (
         country_code STRING,
         country_name STRING,
@@ -280,6 +282,8 @@ Copy-on-Write (COW) is where instead of modifying data directly, the system crea
         'write.update.mode'='copy-on-write',  -- Enable COW for update operations
         'write.merge.mode'='copy-on-write'    -- Enable COW for compaction
     );
+
+    SHOW TBLPROPERTIES default.cow_european_countries;
     ```
     
 ### Iceberg Merge-on-Read (MOR) Table
@@ -293,6 +297,8 @@ Merge-on-Read (MOR) is where, instead of rewriting large files for every modific
 
 !!! tip "IMPALA"
     ```sql
+    DROP TABLE IF EXISTS default.mor_european_countries;
+    
     CREATE TABLE default.mor_european_countries (
         country_code STRING,
         country_name STRING,
@@ -308,4 +314,6 @@ Merge-on-Read (MOR) is where, instead of rewriting large files for every modific
         'write.update.mode'='merge-on-read',
         'write.merge.mode'='merge-on-read'
     );
+
+    SHOW TBLPROPERTIES default.mor_european_countries;
     ```
