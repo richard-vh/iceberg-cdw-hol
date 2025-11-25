@@ -1,5 +1,5 @@
 (function() {
-    const PLACEHOLDER = "YOUR_USERNAME";
+    const PLACEHOLDER = "<USERNAME>";
     const STORAGE_KEY = "mkdocs_user_username";
 
     // 1. Initialization: Find blocks containing the placeholder and store their original state.
