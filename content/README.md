@@ -279,53 +279,47 @@ Schema evolution in Iceberg allows you to modify the structure of your tables ov
 * Backwards compatibility: Allows for schema changes that are compatible with existing data, meaning that you can evolve the schema without breaking old queries or affecting historical data.
 * Simplifying data management: Allows incremental changes to the schema without needing full table rewrites.
 
-**Considerations and Caveats for Schema Evolution**
-
-* Compatibility: Ensure that new schema changes are compatible with existing data. Some operations, such as changing a column's type, require careful consideration.
-* Versioning: Iceberg maintains a versioned history of schema changes, which allows you to track and revert changes if needed. However, large schema modifications across many partitions may require additional resources for processing.
-* Impact on performance: While Iceberg provides schema evolution capabilities, unnecessary schema changes (such as renaming or adding many columns) could lead to performance degradation in some cases.
-
 **Example Schema Evolution:**
 
 !!! tip "IMPALA"
     ```sql
     -- Drop the table if it exists
-    DROP TABLE IF EXISTS default.zoo_animals_schema_evo;
+    DROP TABLE IF EXISTS default.USERNAME_zoo_animals_schema_evo;
     
     -- Create the initial Iceberg table
-    CREATE TABLE default.zoo_animals_schema_evo (
+    CREATE TABLE default.USERNAME_zoo_animals_schema_evo (
         animal_id STRING,
         animal_name STRING
     ) STORED AS ICEBERG;
     
     -- Insert sample data
-    INSERT INTO default.zoo_animals_schema_evo VALUES 
+    INSERT INTO default.USERNAME_zoo_animals_schema_evo VALUES 
     ('A001', 'Lion'),
     ('A002', 'Elephant'),
     ('A003', 'Giraffe');
     
     -- View the Data
-    SELECT * FROM default.zoo_animals_schema_evo;
+    SELECT * FROM default.USERNAME_zoo_animals_schema_evo;
     
     -- View the schema
-    DESCRIBE FORMATTED default.zoo_animals_schema_evo;
+    DESCRIBE FORMATTED default.USERNAME_zoo_animals_schema_evo;
     
     -- Add a new column to the table
-    ALTER TABLE default.zoo_animals_schema_evo ADD COLUMNS (habitat STRING);
+    ALTER TABLE default.USERNAME_zoo_animals_schema_evo ADD COLUMNS (habitat STRING);
     
     -- Insert new data into the updated schema
-    INSERT INTO default.zoo_animals_schema_evo VALUES 
+    INSERT INTO default.USERNAME_zoo_animals_schema_evo VALUES 
     ('A004', 'Zebra', 'Savanna'),
     ('A005', 'Panda', 'Bamboo Forest');
     
     -- View the Data
-    SELECT * FROM default.zoo_animals_schema_evo;
+    SELECT * FROM default.USERNAME_zoo_animals_schema_evo;
     
     -- View the schema
-    DESCRIBE FORMATTED default.zoo_animals_schema_evo;
+    DESCRIBE FORMATTED default.USERNAME_zoo_animals_schema_evo;
     
     -- View the create table
-    SHOW CREATE TABLE default.zoo_animals_schema_evo;
+    SHOW CREATE TABLE default.USERNAME_zoo_animals_schema_evo;
     ```
 
 ### Partition Evolution
