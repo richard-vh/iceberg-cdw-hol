@@ -45,7 +45,7 @@ An **Iceberg Table** is a table where Iceberg manages both the metadata and the 
 
 ### Table Creation Example
 
-!!! success "Impala"
+!!! example "Impala"
     ```sql
     -- Drop the table if it exists
     DROP TABLE IF EXISTS default.managed_countries;
