@@ -64,3 +64,48 @@
 .md-typeset .prereq-complete h2 {
   margin: 0.6em;
 }
+
+/* Styles for the username input container */
+.username-input-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 10px;
+    background: #f5f5f5; /* Light gray background */
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    border: 1px solid #e0e0e0;
+}
+
+/* If using Material theme dark mode, adjust colors */
+[data-md-color-scheme="slate"] .username-input-container {
+     background: #1f2020;
+     border-color: #404040;
+}
+
+.username-input-container input {
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    flex-grow: 1; /* Input takes available space */
+}
+
+.username-input-container button {
+    padding: 6px 12px;
+    cursor: pointer;
+    background-color: var(--md-primary-fg-color--light, #4051b5); /* Use theme primary color if available */
+    color: white;
+    border: none;
+    border-radius: 3px;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+.username-input-container button:hover {
+     background-color: var(--md-primary-fg-color, #303fa1);
+}
+
+.username-input-container button#user-username-clear {
+    background-color: #999;
+    font-size: 0.8em;
+}
