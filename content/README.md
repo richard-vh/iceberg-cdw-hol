@@ -338,10 +338,10 @@ You can change the partitioning strategy after the table has been created, even 
 !!! tip "IMPALA"
     ```sql
     -- DROP TABLE IF EXISTS
-    DROP TABLE IF EXISTS default.zoo_animals_partition_evo;
+    DROP TABLE IF EXISTS default.USERNAME_zoo_animals_partition_evo;
     
     -- CREATE THE INITIAL ICEBERG TABLE PARTITIONED BY 'animal_id'
-    CREATE TABLE default.zoo_animals_partition_evo (
+    CREATE TABLE default.USERNAME_zoo_animals_partition_evo (
         species_name STRING,
         habitat STRING
     )
@@ -349,27 +349,27 @@ You can change the partitioning strategy after the table has been created, even 
     STORED BY ICEBERG;
     
     -- INSERT DATA INTO THE INITIAL PARTITIONING SCHEME
-    INSERT INTO default.zoo_animals_partition_evo VALUES
+    INSERT INTO default.USERNAME_zoo_animals_partition_evo VALUES
         ('A001', 'Lion', 'Savanna'),
         ('A002', 'Tiger', 'Forest');
     
     -- SHOW TABLE DESCRIPTION (IMPALA DOESN'T SUPPORT 'DESCRIBE FORMATTED')
-    DESCRIBE FORMATTED default.zoo_animals_partition_evo;
+    DESCRIBE FORMATTED default.USERNAME_zoo_animals_partition_evo;
     
     -- ALTER TABLE TO ADD A NEW PARTITION FIELD 'habitat'
-    ALTER TABLE default.zoo_animals_partition_evo 
+    ALTER TABLE default.USERNAME_zoo_animals_partition_evo 
     SET PARTITION SPEC (animal_id, habitat);
     
     -- INSERT DATA AFTER THE PARTITION SCHEME CHANGE
-    INSERT INTO default.zoo_animals_partition_evo VALUES
+    INSERT INTO default.USERNAME_zoo_animals_partition_evo VALUES
         ('A003', 'Elephant', 'Grassland'),
         ('A004', 'Panda', 'Mountain');
     
     -- SHOW TABLE DESCRIPTION AFTER CHANGE
-    DESCRIBE FORMATTED default.zoo_animals_partition_evo;
+    DESCRIBE FORMATTED default.USERNAME_zoo_animals_partition_evo;
     
     -- QUERY DATA
-    SELECT * FROM default.zoo_animals_partition_evo;
+    SELECT * FROM default.USERNAME_zoo_animals_partition_evo;
     ```
 New data inserted after the partitioning change will adhere to the new scheme.
 
@@ -390,10 +390,10 @@ Time travel in Iceberg allows you to query a table as it existed at a specific p
 !!! tip "IMPALA"
     ```sql
     -- DROP TABLE IF EXISTS
-    DROP TABLE IF EXISTS default.european_cars_time_travel;
+    DROP TABLE IF EXISTS default.USERNAME_european_cars_time_travel;
     
     -- CREATE ICEBERG TABLE FOR EUROPEAN CARS
-    CREATE TABLE default.european_cars_time_travel (
+    CREATE TABLE default.USERNAME_european_cars_time_travel (
         car_id STRING,
         car_make STRING,
         car_model STRING,
@@ -402,37 +402,37 @@ Time travel in Iceberg allows you to query a table as it existed at a specific p
     STORED AS ICEBERG;
     
     -- INSERT INITIAL DATA
-    INSERT INTO default.european_cars_time_travel VALUES 
+    INSERT INTO default.USERNAME_european_cars_time_travel VALUES 
         ('C001', 'Volkswagen', 'Golf', 'Germany'),
         ('C002', 'BMW', 'X5', 'Germany');
     
     -- LIST THE AVAILABLE SNAPSHOTS
-    SELECT * FROM default.european_cars_time_travel.snapshots;
+    SELECT * FROM default.USERNAME_european_cars_time_travel.snapshots;
     
     -- Perform an update operation to modify the data 
-    UPDATE default.european_cars_time_travel 
+    UPDATE default.USERNAME_european_cars_time_travel 
     SET car_model = 'Polo' 
     WHERE car_id = 'C001';
     
     -- LIST THE AVAILABLE SNAPSHOTS AFTER UPDATE
-    SELECT * FROM default.european_cars_time_travel.snapshots;
+    SELECT * FROM default.USERNAME_european_cars_time_travel.snapshots;
     
     -- INSERT NEW CAR DATA (NOT A EUROPEAN CAR)
-    INSERT INTO default.european_cars_time_travel 
+    INSERT INTO default.USERNAME_european_cars_time_travel 
     VALUES ('C003', 'FORD', 'F150', 'USA');
     
     -- LIST THE AVAILABLE SNAPSHOTS AFTER INSERT
-    SELECT * FROM default.european_cars_time_travel.snapshots;
+    SELECT * FROM default.USERNAME_european_cars_time_travel.snapshots;
     
     -- CHECK CURRENT TABLE DATA
-    SELECT * FROM default.european_cars_time_travel;
+    SELECT * FROM default.USERNAME_european_cars_time_travel;
     
     -- FETCH THE SNAPSHOT ID BEFORE MOST RECENT APPEND (i.e. The operation should = overwrite)
-    SELECT * FROM default.european_cars_time_travel.snapshots;
+    SELECT * FROM default.USERNAME_european_cars_time_travel.snapshots;
     
     -- TIME TRAVEL TO BEFORE THE INSERT OF THE USA CAR
     SELECT * 
-    FROM default.european_cars_time_travel 
+    FROM default.USERNAME_european_cars_time_travel 
     FOR SYSTEM_VERSION AS OF <USE_SNAPSHOT_ID_FROM_PREVIOUS_QUERY>;
     ```
 
@@ -451,10 +451,10 @@ Rollback in Iceberg allows you to revert the table's state to a specific snapsho
 !!! tip "IMPALA"
     ```sql
     -- DROP TABLE IF EXISTS
-    DROP TABLE IF EXISTS default.european_cars_time_travel;
+    DROP TABLE IF EXISTS default.USERNAME_european_cars_time_travel;
     
     -- CREATE ICEBERG TABLE FOR EUROPEAN CARS
-    CREATE TABLE default.european_cars_time_travel (
+    CREATE TABLE default.USERNAME_european_cars_time_travel (
         car_id STRING,
         car_make STRING,
         car_model STRING,
@@ -463,37 +463,37 @@ Rollback in Iceberg allows you to revert the table's state to a specific snapsho
     STORED AS ICEBERG;
     
     -- INSERT INITIAL DATA
-    INSERT INTO default.european_cars_time_travel VALUES 
+    INSERT INTO default.USERNAME_european_cars_time_travel VALUES 
         ('C001', 'Volkswagen', 'Golf', 'Germany'),
         ('C002', 'BMW', 'X5', 'Germany');
     
     -- LIST THE AVAILABLE SNAPSHOTS
-    SELECT * FROM default.european_cars_time_travel.snapshots;
+    SELECT * FROM default.USERNAME_european_cars_time_travel.snapshots;
     
     -- Perform an update operation to modify the data 
-    UPDATE default.european_cars_time_travel 
+    UPDATE default.USERNAME_european_cars_time_travel 
     SET car_model = 'Polo' 
     WHERE car_id = 'C001';
     
     -- LIST THE AVAILABLE SNAPSHOTS AFTER UPDATE
-    SELECT * FROM default.european_cars_time_travel.snapshots;
+    SELECT * FROM default.USERNAME_european_cars_time_travel.snapshots;
     
     -- INSERT NEW CAR DATA (NOT A EUROPEAN CAR)
-    INSERT INTO default.european_cars_time_travel 
+    INSERT INTO default.USERNAME_european_cars_time_travel 
     VALUES ('C003', 'FORD', 'F150', 'USA');
     
     -- FETCH THE SNAPSHOT ID BEFORE MOST RECENT APPEND (i.e. The Operation should = overwrite)
-    SELECT * FROM default.european_cars_time_travel.snapshots;
+    SELECT * FROM default.USERNAME_european_cars_time_travel.snapshots;
     
     --------------------------------------------------------------------------------
     -- ROLLBACK TO AN EARLIER SNAPSHOT (Manual Process in Impala)
     --------------------------------------------------------------------------------
     
-    ALTER TABLE default.european_cars_time_travel 
+    ALTER TABLE default.USERNAME_european_cars_time_travel 
     EXECUTE ROLLBACK(<USE_SNAPSHOT_ID_FROM_PREVIOUS_QUERY>);
     
     -- CHECK DATA AFTER ROLLBACK
-    SELECT * FROM default.european_cars_time_travel;
+    SELECT * FROM default.USERNAME_european_cars_time_travel;
     ```
 
 ## 10. Understanding Iceberg Storage
