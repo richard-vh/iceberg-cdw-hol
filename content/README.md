@@ -152,6 +152,7 @@ In Iceberg, data manipulation (insertions, updates, deletions) is performed usin
 Updates modify existing records based on a condition.
 
 **Best Practices:**
+
 * Ensure the schema is well-defined.
 * Perform updates only when necessary to avoid frequent schema changes.
 * Monitor table performance as data grows, especially with large updates.
@@ -195,6 +196,7 @@ Updates modify existing records based on a condition.
 Iceberg uses a **snapshot mechanism**, so deletions add a new snapshot but do not immediately remove the physical data. This ensures that deleted data can still be recovered.
 
 **Considerations:**
+
 * Deletions are versioned and can be reverted through time travel.
 * You can configure Iceberg to perform data compaction after deletion for performance optimization.
 
