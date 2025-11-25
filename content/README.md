@@ -13,16 +13,16 @@ This document explores some of the core features of Apache Iceberg, including ta
 ## Table of Contents
 
 1.  [Creating Iceberg Tables](#1-creating-iceberg-tables)
-2.  [Understanding Iceberg Storage](#2-understanding-iceberg-storage)
-3.  [Inserts, Updates, and Deletes](#3-inserts-updates-and-deletes)
-4.  [Iceberg Table Types (COW and MOR)](#4-iceberg-table-types-cow-and-mor)
-7.  [Schema and Partition Evolution](#5-schema-and-partition-evolution)
-8.  [Time Travel and Rollbacks](#6-time-travel-and-rollbacks)
-9.  [Branching and Merging](#7-branching-and-merging)
-10. [Tagging (Versioning)](#8-tagging-versioning)
-11. [Table Migration](#9-table-migration)
-12. [Table Maintenance](#10-table-maintenance)
-13. [Useful Links](#11-useful-links)
+2.  [Inserts, Updates, and Deletes](#2-inserts-updates-and-deletes)
+3.  [Iceberg Table Types (COW and MOR)](#3-iceberg-table-types-cow-and-mor)
+4.  [Schema and Partition Evolution](#4-schema-and-partition-evolution)
+5.  [Time Travel and Rollbacks](#5-time-travel-and-rollbacks)
+6.  [Branching and Merging](#6-branching-and-merging)
+7.  [Tagging (Versioning)](#7-tagging-versioning)
+8.  [Table Migration](#8-table-migration)
+9.  [Table Maintenance](#9-table-maintenance)
+10. [Understanding Iceberg Storage](#10-understanding-iceberg-storage)
+11. [Useful Links](#11-useful-links)
 
 ---
 
@@ -84,74 +84,7 @@ An **Iceberg Table** is a table where Iceberg manages both the metadata and the 
     SHOW CREATE TABLE default.USERNAME_managed_countries;
     ```
 
-## 2. Understanding Iceberg Storage
-
-### Iceberg Table Definition and Metadata
-The **`SHOW CREATE TABLE`** command confirms the Iceberg table's definition. Checking the HDFS location reveals that Iceberg manages both data (**`data/`**) and metadata (**`metadata/`**) directories within the table's storage path.
-
-- **`metadata/`** contains snapshots, schema history, and manifest files.
-- **`data/`** contains the actual table data files.
-
-Iceberg uses the **`metadata/`** directory to manage partitioning and versioning, without relying on Hive Metastore. The **`data/`    ** directory contains the actual table data files.
-
-### Code Example
-
-!!! tip "IMPALA"
-    ```sql
-    -- Get the Iceberg table definition
-    SHOW CREATE TABLE default.USERNAME_managed_countries;
-    ```
-
-!!! tip "BASH"
-    ```
-    # Check the Object Store directory for Iceberg metadata and data
-    [jturkington@XYZ-es01 ~]$ hdfs dfs -ls s3a://.../external/hive/default.db/managed_countries/metadata
-    -rw-r--r--   3 jturkington hive       1710 2025-02-05 12:55 hdfs://.../external/hive/default.db/managed_countries/metadata/00000-bc161db1-05f2-4d64-baab-69ca2070db33.metadata.json
-    -rw-r--r--   3 jturkington hive       6072 2025-02-05 04:05 hdfs://.../external/hive/default.db/managed_countries/metadata/3ecfea4f-9e06-45a9-bd7c-430fe4758283-m0.avro
-    -rw-r--r--   3 jturkington hive       3800 2025-02-05 12:55 hdfs://.../external/hive/default.db/managed_countries/metadata/snap-1185275548636187694-1-f7f549e1-bd07-44da-b170-8973c2e6e3d6.avro
-    ```
-
-
-### Understanding the Metadata Files
-Iceberg uses several types of metadata files to track table state and manage its partitions. Below are the types of metadata files found in the **`metadata/`** directory.
-
-![](https://raw.githubusercontent.com/richard-vh/iceberg-cdw-hol/refs/heads/main/content/assets/images/iceberg_file_structure.png)
-
-#### <ins>Metadata JSON Files (*.metadata.json)</ins>
-**Example Files:**
-00000-bc161db1-05f2-4d64-baab-69ca2070db33.metadata.json
-
-**Purpose:** Stores table-level metadata such as schema, partitioning, snapshots, and file references. Each time the table structure changes (e.g., schema evolution, snapshot creation), a new metadata JSON file is generated. Older metadata files are retained to support time travel and rollback.<br/>
-**Data Type:** JSON format (human-readable, structured key-value pairs).<br/>
-**Why?** JSON allows Iceberg to store metadata in a flexible, easily accessible format. New versions can be created without modifying existing files, enabling schema evolution.
-
-#### <ins>Snapshot Files (snap-*.avro)</ins>
-**Example Files:**
-snap-1185275548636187694-1-f7f549e1-bd07-44da-b170-8973c2e6e3d6.avro
-
-**Purpose:** Tracks table state at a specific point in time (snapshot ID, timestamp, manifest list, etc.). Allows for time travel and rollbacks to previous versions of the table.<br/>
-**Data Type:** Apache Avro format (binary, optimized for structured data storage).<br/>
-**Why?** Storing snapshots in Avro provides efficient serialization while keeping metadata compact and performant. Enables fast lookup of previous states for Iceberg’s time travel feature.
-
-#### <ins>Manifest List Files (*-m0.avro)</ins>
-**Example Files:**
-3ecfea4f-9e06-45a9-bd7c-430fe4758283-m0.avro
-
-**Purpose:** Stores a list of manifest files associated with a snapshot. Helps Iceberg quickly determine which data files belong to which snapshot without scanning the entire table.<br/>
-**Data Type:** Apache Avro format (binary, optimized for fast read/write).<br/>
-**Why?** Avro is compact and supports schema evolution, making it ideal for metadata storage. Using Avro instead of JSON for large metadata speeds up querying and file tracking.
-
-### How These Files Work Together in Iceberg
-
-**Metadata JSON file** (*.metadata.json) defines the table schema and references snapshots.
-
-**Snapshot file** (snap-*.avro) records changes and links to manifest lists.
-
-**Manifest list file** (*-m0.avro) references manifest files that contain details of individual data files.
-
-These components work together to support partitioning, versioning, and time travel, allowing Iceberg to provide robust table management with features like schema evolution and data consistency.
-
-## 3. Inserts, Updates, and Deletes
+## 2. Inserts, Updates, and Deletes
 
 In Iceberg, data manipulation (inserts, updates, deletes) is performed using standard SQL commands.
 
@@ -240,7 +173,7 @@ Iceberg uses a **snapshot mechanism**, so deletions add a new snapshot but do no
     SELECT * FROM default.USERNAME_english_football_teams;
     ```
 
-## 4. Iceberg Table Types (COW and MOR)
+## 3. Iceberg Table Types (COW and MOR)
 
 Iceberg tables support different storage strategies to balance performance, storage efficiency, and query speed. This section introduces the two primary approaches.
 
@@ -325,91 +258,313 @@ Merge-on-Read (MOR) is where, instead of rewriting large files for every modific
 
     SHOW TBLPROPERTIES default.USERNAME_mor_european_countries;
     ```
-## 5. Schema and Partition Evolution
+## 4. Schema and Partition Evolution
+
+![](https://raw.githubusercontent.com/richard-vh/iceberg-cdw-hol/refs/heads/main/content/assets/images/schema_partition_evolution.png)
 
 ### Schema Evolution in Iceberg
 
-Schema evolution allows you to modify table structures over time while ensuring historical data remains accessible without requiring a full table rewrite.
+Schema evolution in Iceberg allows you to modify the structure of your tables over time. This includes adding, renaming, and removing columns while ensuring that historical data remains accessible without requiring a full rewrite of the table.
 
 **Schema Evolution Operations include:**
-*   Adding new columns.
-*   Renaming existing columns.
-*   Changing column types (if compatible).
-*   Dropping columns.
 
-Schema evolution is important for adapting to business needs, maintaining backwards compatibility, and simplifying data management by allowing incremental changes.
+* Adding columns: You can add new columns without affecting the existing data or operations.
+* Renaming columns: The renaming of columns is supported without requiring data migration.
+* Changing column types: You can change the type of a column, as long as it is compatible with the existing data.
+* Dropping columns: Columns can be safely dropped if they are no longer needed.
 
-**Example Schema Evolution (SPARK):**
+**Why is Schema Evolution important?**
 
-```sql
-# Add a new column to the table
-spark.sql("""
-ALTER TABLE default.zoo_animals_schema_evo ADD COLUMN habitat STRING
-""")
+* Adapting to business needs: As your data requirements evolve, schema changes are often necessary without disrupting production workflows.
+* Backwards compatibility: Allows for schema changes that are compatible with existing data, meaning that you can evolve the schema without breaking old queries or affecting historical data.
+* Simplifying data management: Allows incremental changes to the schema without needing full table rewrites.
 
-# Rename an existing column
-spark.sql("""
-ALTER TABLE default.zoo_animals_schema_evo RENAME COLUMN animal_name TO species_name
-""")
-```
+**Considerations and Caveats for Schema Evolution**
+
+* Compatibility: Ensure that new schema changes are compatible with existing data. Some operations, such as changing a column's type, require careful consideration.
+* Versioning: Iceberg maintains a versioned history of schema changes, which allows you to track and revert changes if needed. However, large schema modifications across many partitions may require additional resources for processing.
+* Impact on performance: While Iceberg provides schema evolution capabilities, unnecessary schema changes (such as renaming or adding many columns) could lead to performance degradation in some cases.
+
+**Example Schema Evolution:**
+
+!!! tip "IMPALA"
+    ```sql
+    -- Drop the table if it exists
+    DROP TABLE IF EXISTS default.zoo_animals_schema_evo;
+    
+    -- Create the initial Iceberg table
+    CREATE TABLE default.zoo_animals_schema_evo (
+        animal_id STRING,
+        animal_name STRING
+    ) STORED AS ICEBERG;
+    
+    -- Insert sample data
+    INSERT INTO default.zoo_animals_schema_evo VALUES 
+    ('A001', 'Lion'),
+    ('A002', 'Elephant'),
+    ('A003', 'Giraffe');
+    
+    -- View the Data
+    SELECT * FROM default.zoo_animals_schema_evo;
+    
+    -- View the schema
+    DESCRIBE FORMATTED default.zoo_animals_schema_evo;
+    
+    -- Add a new column to the table
+    ALTER TABLE default.zoo_animals_schema_evo ADD COLUMNS (habitat STRING);
+    
+    -- Insert new data into the updated schema
+    INSERT INTO default.zoo_animals_schema_evo VALUES 
+    ('A004', 'Zebra', 'Savanna'),
+    ('A005', 'Panda', 'Bamboo Forest');
+    
+    -- View the Data
+    SELECT * FROM default.zoo_animals_schema_evo;
+    
+    -- View the schema
+    DESCRIBE FORMATTED default.zoo_animals_schema_evo;
+    
+    -- View the create table
+    SHOW CREATE TABLE default.zoo_animals_schema_evo;
+    ```
 
 ### Partition Evolution
 
-Partition evolution is the ability to modify the partitioning strategy of an Iceberg table after its creation, such as changing the partitioning key or adding new partitioning columns. This is unlike traditional partitioning schemes because it allows flexible evolution without needing to rewrite the entire dataset.
+artition evolution refers to the ability to modify the partitioning strategy of an Iceberg table after it has been created. This can involve changing the partitioning key (column used for partitioning) or adding new partitioning columns. Unlike traditional partitioning schemes, Iceberg allows for flexible partition evolution without needing to rewrite the entire dataset. Partitioning evolution can help optimize query performance and manage large datasets more efficiently.
 
-**Partition Management Strategies:**
-*   Time-based partitioning for time-series data.
-*   Range or hash partitioning for balancing data across partitions.
-*   The partitioning strategy can be changed after the table has been created, even if data already exists.
+**Common Partitioning Strategies**
 
-**Example Partition Evolution (SPARK):**
+* Time-based partitioning: Commonly used for time-series data, partitioning by date or timestamp can help in partition pruning, making queries faster.
+* Range or hash partitioning: For datasets with discrete values like animal species, partitioning by a range of values or using hash partitioning can help balance the data across partitions.
 
-```sql
-# Create the initial Iceberg table partitioned by 'animal_id'
-CREATE TABLE default.zoo_animals_partition_evo (
-animal_id STRING,
-species_name STRING,
-habitat STRING
-)
-USING iceberg
-PARTITIONED BY (animal_id)
+You can change the partitioning strategy after the table has been created, even if the data already exists. This allows you to optimize partitioning as your query patterns evolve and take advantage of query optimization with regards to partition pruning as the data evolves and grows within the table.
 
-# Change the partitioning scheme to partition by both 'animal_id' and 'habitat'
-spark.sql(""" ALTER TABLE default.zoo_animals_partition_evo ADD PARTITION FIELD habitat""")
-```
+**Example Partition Evolution:**
+
+!!! tip "IMPALA"
+    ```sql
+    -- DROP TABLE IF EXISTS
+    DROP TABLE IF EXISTS default.zoo_animals_partition_evo;
+    
+    -- CREATE THE INITIAL ICEBERG TABLE PARTITIONED BY 'animal_id'
+    CREATE TABLE default.zoo_animals_partition_evo (
+        species_name STRING,
+        habitat STRING
+    )
+    PARTITIONED BY (animal_id STRING)
+    STORED BY ICEBERG;
+    
+    -- INSERT DATA INTO THE INITIAL PARTITIONING SCHEME
+    INSERT INTO default.zoo_animals_partition_evo VALUES
+        ('A001', 'Lion', 'Savanna'),
+        ('A002', 'Tiger', 'Forest');
+    
+    -- SHOW TABLE DESCRIPTION (IMPALA DOESN'T SUPPORT 'DESCRIBE FORMATTED')
+    DESCRIBE FORMATTED default.zoo_animals_partition_evo;
+    
+    -- ALTER TABLE TO ADD A NEW PARTITION FIELD 'habitat'
+    ALTER TABLE default.zoo_animals_partition_evo 
+    SET PARTITION SPEC (animal_id, habitat);
+    
+    -- INSERT DATA AFTER THE PARTITION SCHEME CHANGE
+    INSERT INTO default.zoo_animals_partition_evo VALUES
+        ('A003', 'Elephant', 'Grassland'),
+        ('A004', 'Panda', 'Mountain');
+    
+    -- SHOW TABLE DESCRIPTION AFTER CHANGE
+    DESCRIBE FORMATTED default.zoo_animals_partition_evo;
+    
+    -- QUERY DATA
+    SELECT * FROM default.zoo_animals_partition_evo;
+    ```
 New data inserted after the partitioning change will adhere to the new scheme.
 
-## 6. Time Travel and Rollbacks
+## 5. Time Travel and Rollbacks
 
 ### Time Travel in Iceberg
 
-Time travel allows you to query a table as it existed at a specific point in the past, leveraging Iceberg's snapshot-based architecture. You can specify a timestamp or snapshot ID when querying the table.
+Time travel in Iceberg allows you to query a table as it existed at a specific point in time in the past. This feature leverages Iceberg's snapshot-based architecture to track all changes made to the data over time. When you perform time travel, Iceberg will provide data based on the state of the table at a specified snapshot or timestamp. Time travel is supported by specifying a timestamp or snapshotid when querying the table, which enables access to historical data without having to maintain separate copies of the data.
 
 **Time Travel Benefits:**
+
 *   Enables **historical queries** for auditing and investigating historical trends.
 *   Allows **data recovery** from accidental corruption.
 *   Simplifies rollbacks by querying an earlier snapshot.
 
-**Example Time Travel (SPARK):**
-After listing available snapshots (using `default.european_cars_time_travel.snapshots`):
+**Example Time Travel:**
 
-```sql
-# Fetch a specific snapshot ID, e.g., rollback_snapshot_id_1
-# Travel back to when the USA Cars weren't present in the table
-df_time_travel = spark.sql(f"""
-SELECT * FROM default.european_cars_time_travel VERSION AS OF {rollback_snapshot_id_1}
-""")
-df_time_travel.show()
-```
+!!! tip "IMPALA"
+    ```sql
+    -- DROP TABLE IF EXISTS
+    DROP TABLE IF EXISTS default.european_cars_time_travel;
+    
+    -- CREATE ICEBERG TABLE FOR EUROPEAN CARS
+    CREATE TABLE default.european_cars_time_travel (
+        car_id STRING,
+        car_make STRING,
+        car_model STRING,
+        car_country STRING
+    )
+    STORED AS ICEBERG;
+    
+    -- INSERT INITIAL DATA
+    INSERT INTO default.european_cars_time_travel VALUES 
+        ('C001', 'Volkswagen', 'Golf', 'Germany'),
+        ('C002', 'BMW', 'X5', 'Germany');
+    
+    -- LIST THE AVAILABLE SNAPSHOTS
+    SELECT * FROM default.european_cars_time_travel.snapshots;
+    
+    -- Perform an update operation to modify the data 
+    UPDATE default.european_cars_time_travel 
+    SET car_model = 'Polo' 
+    WHERE car_id = 'C001';
+    
+    -- LIST THE AVAILABLE SNAPSHOTS AFTER UPDATE
+    SELECT * FROM default.european_cars_time_travel.snapshots;
+    
+    -- INSERT NEW CAR DATA (NOT A EUROPEAN CAR)
+    INSERT INTO default.european_cars_time_travel 
+    VALUES ('C003', 'FORD', 'F150', 'USA');
+    
+    -- LIST THE AVAILABLE SNAPSHOTS AFTER INSERT
+    SELECT * FROM default.european_cars_time_travel.snapshots;
+    
+    -- CHECK CURRENT TABLE DATA
+    SELECT * FROM default.european_cars_time_travel;
+    
+    -- FETCH THE SNAPSHOT ID BEFORE MOST RECENT APPEND (i.e. The operation should = overwrite)
+    SELECT * FROM default.european_cars_time_travel.snapshots;
+    
+    -- TIME TRAVEL TO BEFORE THE INSERT OF THE USA CAR
+    SELECT * 
+    FROM default.european_cars_time_travel 
+    FOR SYSTEM_VERSION AS OF <USE_SNAPSHOT_ID_FROM_PREVIOUS_QUERY>;
+    ```
 
 ### Rollback Using Snapshots
 
-Rollback reverts the table's current state to a specific snapshot, undoing subsequent changes. The rollback operation restores the table to the state of the specified snapshot.
+Rollback in Iceberg allows you to revert the table's state to a specific snapshot, undoing any subsequent changes. This is useful in scenarios where data corruption, accidental deletion, or unwanted changes occur. By rolling back to a previous snapshot, you can restore the table to its desired state.
 
-**Example Rollback (SPARK):**
+**Key Points on Rollback:**
 
-```sql
-# Assume 'first_snapshot' is the ID of the desired state
-# Call the Roll Back Command
-spark.sql(f"CALL spark_catalog.system.rollback_to_snapshot('default.european_cars_rollback', {first_snapshot})").show()
-```
+* Rollback to a Snapshot: You can roll back the table by specifying a snapshotid that corresponds to the point in time you wish to revert to.
+* How it works: The rollback operation rewrites the table to the state of the specified snapshot, effectively "reverting" any changes made after that snapshot.
+* Usage: Rollback can be useful in production environments where you need to ensure data integrity and recover from accidental modifications.
+
+**Example Rollback:**
+
+!!! tip "IMPALA"
+    ```sql
+    -- DROP TABLE IF EXISTS
+    DROP TABLE IF EXISTS default.european_cars_time_travel;
+    
+    -- CREATE ICEBERG TABLE FOR EUROPEAN CARS
+    CREATE TABLE default.european_cars_time_travel (
+        car_id STRING,
+        car_make STRING,
+        car_model STRING,
+        car_country STRING
+    )
+    STORED AS ICEBERG;
+    
+    -- INSERT INITIAL DATA
+    INSERT INTO default.european_cars_time_travel VALUES 
+        ('C001', 'Volkswagen', 'Golf', 'Germany'),
+        ('C002', 'BMW', 'X5', 'Germany');
+    
+    -- LIST THE AVAILABLE SNAPSHOTS
+    SELECT * FROM default.european_cars_time_travel.snapshots;
+    
+    -- Perform an update operation to modify the data 
+    UPDATE default.european_cars_time_travel 
+    SET car_model = 'Polo' 
+    WHERE car_id = 'C001';
+    
+    -- LIST THE AVAILABLE SNAPSHOTS AFTER UPDATE
+    SELECT * FROM default.european_cars_time_travel.snapshots;
+    
+    -- INSERT NEW CAR DATA (NOT A EUROPEAN CAR)
+    INSERT INTO default.european_cars_time_travel 
+    VALUES ('C003', 'FORD', 'F150', 'USA');
+    
+    -- FETCH THE SNAPSHOT ID BEFORE MOST RECENT APPEND (i.e. The Operation should = overwrite)
+    SELECT * FROM default.european_cars_time_travel.snapshots;
+    
+    --------------------------------------------------------------------------------
+    -- ROLLBACK TO AN EARLIER SNAPSHOT (Manual Process in Impala)
+    --------------------------------------------------------------------------------
+    
+    ALTER TABLE default.european_cars_time_travel 
+    EXECUTE ROLLBACK(<USE_SNAPSHOT_ID_FROM_PREVIOUS_QUERY>);
+    
+    -- CHECK DATA AFTER ROLLBACK
+    SELECT * FROM default.european_cars_time_travel;
+    ```
+
+## 10. Understanding Iceberg Storage
+
+### Iceberg Table Definition and Metadata
+The **`SHOW CREATE TABLE`** command confirms the Iceberg table's definition. Checking the HDFS location reveals that Iceberg manages both data (**`data/`**) and metadata (**`metadata/`**) directories within the table's storage path.
+
+- **`metadata/`** contains snapshots, schema history, and manifest files.
+- **`data/`** contains the actual table data files.
+
+Iceberg uses the **`metadata/`** directory to manage partitioning and versioning, without relying on Hive Metastore. The **`data/`    ** directory contains the actual table data files.
+
+### Code Example
+
+!!! tip "IMPALA"
+    ```sql
+    -- Get the Iceberg table definition
+    SHOW CREATE TABLE default.USERNAME_managed_countries;
+    ```
+
+!!! tip "BASH"
+    ```
+    # Check the Object Store directory for Iceberg metadata and data
+    [jturkington@XYZ-es01 ~]$ hdfs dfs -ls s3a://.../external/hive/default.db/managed_countries/metadata
+    -rw-r--r--   3 jturkington hive       1710 2025-02-05 12:55 hdfs://.../external/hive/default.db/managed_countries/metadata/00000-bc161db1-05f2-4d64-baab-69ca2070db33.metadata.json
+    -rw-r--r--   3 jturkington hive       6072 2025-02-05 04:05 hdfs://.../external/hive/default.db/managed_countries/metadata/3ecfea4f-9e06-45a9-bd7c-430fe4758283-m0.avro
+    -rw-r--r--   3 jturkington hive       3800 2025-02-05 12:55 hdfs://.../external/hive/default.db/managed_countries/metadata/snap-1185275548636187694-1-f7f549e1-bd07-44da-b170-8973c2e6e3d6.avro
+    ```
+
+
+### Understanding the Metadata Files
+Iceberg uses several types of metadata files to track table state and manage its partitions. Below are the types of metadata files found in the **`metadata/`** directory.
+
+![](https://raw.githubusercontent.com/richard-vh/iceberg-cdw-hol/refs/heads/main/content/assets/images/iceberg_file_structure.png)
+
+#### <ins>Metadata JSON Files (*.metadata.json)</ins>
+**Example Files:**
+00000-bc161db1-05f2-4d64-baab-69ca2070db33.metadata.json
+
+**Purpose:** Stores table-level metadata such as schema, partitioning, snapshots, and file references. Each time the table structure changes (e.g., schema evolution, snapshot creation), a new metadata JSON file is generated. Older metadata files are retained to support time travel and rollback.<br/>
+**Data Type:** JSON format (human-readable, structured key-value pairs).<br/>
+**Why?** JSON allows Iceberg to store metadata in a flexible, easily accessible format. New versions can be created without modifying existing files, enabling schema evolution.
+
+#### <ins>Snapshot Files (snap-*.avro)</ins>
+**Example Files:**
+snap-1185275548636187694-1-f7f549e1-bd07-44da-b170-8973c2e6e3d6.avro
+
+**Purpose:** Tracks table state at a specific point in time (snapshot ID, timestamp, manifest list, etc.). Allows for time travel and rollbacks to previous versions of the table.<br/>
+**Data Type:** Apache Avro format (binary, optimized for structured data storage).<br/>
+**Why?** Storing snapshots in Avro provides efficient serialization while keeping metadata compact and performant. Enables fast lookup of previous states for Iceberg’s time travel feature.
+
+#### <ins>Manifest List Files (*-m0.avro)</ins>
+**Example Files:**
+3ecfea4f-9e06-45a9-bd7c-430fe4758283-m0.avro
+
+**Purpose:** Stores a list of manifest files associated with a snapshot. Helps Iceberg quickly determine which data files belong to which snapshot without scanning the entire table.<br/>
+**Data Type:** Apache Avro format (binary, optimized for fast read/write).<br/>
+**Why?** Avro is compact and supports schema evolution, making it ideal for metadata storage. Using Avro instead of JSON for large metadata speeds up querying and file tracking.
+
+### How These Files Work Together in Iceberg
+
+**Metadata JSON file** (*.metadata.json) defines the table schema and references snapshots.
+
+**Snapshot file** (snap-*.avro) records changes and links to manifest lists.
+
+**Manifest list file** (*-m0.avro) references manifest files that contain details of individual data files.
+
+These components work together to support partitioning, versioning, and time travel, allowing Iceberg to provide robust table management with features like schema evolution and data consistency.
