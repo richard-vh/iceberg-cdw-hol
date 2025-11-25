@@ -1,5 +1,5 @@
 (function() {
-    const PLACEHOLDER = "<USERNAME>";
+    const PLACEHOLDER = "USERNAME";
     const STORAGE_KEY = "mkdocs_user_username";
     const REGEX = new RegExp(PLACEHOLDER, 'g');
 
