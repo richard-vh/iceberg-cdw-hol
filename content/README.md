@@ -99,7 +99,7 @@ Iceberg uses the **`metadata/`** directory to manage partitioning and versioning
 !!! tip "IMPALA"
     ```
     -- Get the Iceberg table definition
-    SHOW CREATE TABLE default.managed_countries;
+    SHOW CREATE TABLE default.USERNAME_managed_countries;
     ```
 
 !!! tip "BASH"
@@ -170,10 +170,10 @@ Updates modify existing records based on a condition.
 !!! tip "IMPALA"
     ```sql
     -- Drop the table if it exists
-    DROP TABLE IF EXISTS default.english_football_teams;
+    DROP TABLE IF EXISTS default.USERNAME_english_football_teams;
     
     -- Create the table for football teams in England
-    CREATE TABLE default.english_football_teams (
+    CREATE TABLE default.USERNAME_english_football_teams (
         team_id STRING,
         team_name STRING,
         team_city STRING,
@@ -181,22 +181,22 @@ Updates modify existing records based on a condition.
     ) STORED AS ICEBERG;
     
     -- Inserting data into the table
-    INSERT INTO default.english_football_teams 
+    INSERT INTO default.USERNAME_english_football_teams 
     VALUES 
     ('T001', 'Manchester United', 'Manchester', 'Old Trafford'),
     ('T002', 'Liverpool', 'Liverpool', 'Anfield'),
     ('T003', 'Chelsea', 'London', 'Stamford Bridge');
     
     -- Select all data from the table
-    SELECT * FROM default.english_football_teams;
+    SELECT * FROM default.USERNAME_english_football_teams;
     
     -- Update Stadium Name
-    UPDATE default.english_football_teams 
+    UPDATE default.USERNAME_english_football_teams 
     SET team_stadium = 'New Stamford Bridge' 
     WHERE team_id = 'T003';
     
     -- Select the updated data
-    SELECT * FROM default.english_football_teams;
+    SELECT * FROM default.USERNAME_english_football_teams;
     ```
 
 ### Handling Data Deletions
@@ -213,10 +213,10 @@ Iceberg uses a **snapshot mechanism**, so deletions add a new snapshot but do no
 !!! tip "IMPALA"
     ```sql
     -- Drop the table if it exists
-    DROP TABLE IF EXISTS default.english_football_teams;
+    DROP TABLE IF EXISTS default.USERNAME_english_football_teams;
     
     -- Create the table for football teams in England with ICEBERG storage
-    CREATE TABLE default.english_football_teams (
+    CREATE TABLE default.USERNAME_english_football_teams (
         team_id STRING,
         team_name STRING,
         team_city STRING,
@@ -224,7 +224,7 @@ Iceberg uses a **snapshot mechanism**, so deletions add a new snapshot but do no
     ) STORED AS ICEBERG;
     
     -- Inserting data into the table
-    INSERT INTO default.english_football_teams 
+    INSERT INTO default.USERNAME_english_football_teams 
     VALUES 
     ('T001', 'Manchester United', 'Manchester', 'Old Trafford'),
     ('T002', 'Liverpool', 'Liverpool', 'Anfield'),
@@ -234,10 +234,10 @@ Iceberg uses a **snapshot mechanism**, so deletions add a new snapshot but do no
     SELECT * FROM default.english_football_teams;
     
     -- Delete using Team ID 
-    DELETE FROM default.english_football_teams WHERE team_id = 'T003';
+    DELETE FROM default.USERNAME_english_football_teams WHERE team_id = 'T003';
     
     -- Select the updated data
-    SELECT * FROM default.english_football_teams;
+    SELECT * FROM default.USERNAME_english_football_teams;
     ```
 
 ## 4. Iceberg Table Types (COW and MOR)
@@ -274,9 +274,9 @@ Copy-on-Write (COW) is where instead of modifying data directly, the system crea
 
 !!! tip "IMPALA"
     ```sql
-    DROP TABLE IF EXISTS default.cow_european_countries;
+    DROP TABLE IF EXISTS default.USERNAME_cow_european_countries;
     
-    CREATE TABLE default.cow_european_countries (
+    CREATE TABLE default.USERNAME_cow_european_countries (
         country_code STRING,
         country_name STRING,
         population BIGINT,
@@ -291,7 +291,7 @@ Copy-on-Write (COW) is where instead of modifying data directly, the system crea
         'write.merge.mode'='copy-on-write'    -- Enable COW for compaction
     );
 
-    SHOW TBLPROPERTIES default.cow_european_countries;
+    SHOW TBLPROPERTIES default.USERNAME_cow_european_countries;
     ```
     
 ### Iceberg Merge-on-Read (MOR) Table
@@ -305,9 +305,9 @@ Merge-on-Read (MOR) is where, instead of rewriting large files for every modific
 
 !!! tip "IMPALA"
     ```sql
-    DROP TABLE IF EXISTS default.mor_european_countries;
+    DROP TABLE IF EXISTS default.USERNAME_mor_european_countries;
     
-    CREATE TABLE default.mor_european_countries (
+    CREATE TABLE default.USERNAME_mor_european_countries (
         country_code STRING,
         country_name STRING,
         population BIGINT,
@@ -323,5 +323,5 @@ Merge-on-Read (MOR) is where, instead of rewriting large files for every modific
         'write.merge.mode'='merge-on-read'
     );
 
-    SHOW TBLPROPERTIES default.mor_european_countries;
+    SHOW TBLPROPERTIES default.USERNAME_mor_european_countries;
     ```
