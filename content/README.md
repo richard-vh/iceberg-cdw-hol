@@ -79,30 +79,32 @@ An **Iceberg Table** is a table where Iceberg manages both the metadata and the 
 ## 2. Understanding Iceberg Storage
 
 ### Iceberg Table Definition and Metadata
-The `SHOW CREATE TABLE` command confirms the Iceberg table's definition. Checking the HDFS location reveals that Iceberg manages both data (`data/`) and metadata (`metadata/`) directories within the table's storage path.
+The **`SHOW CREATE TABLE`** command confirms the Iceberg table's definition. Checking the HDFS location reveals that Iceberg manages both data (**`data/`**) and metadata (**`metadata/`**) directories within the table's storage path.
 
-- **metadata/** contains snapshots, schema history, and manifest files.
-- **data/** contains the actual table data files.
+- **`metadata/`** contains snapshots, schema history, and manifest files.
+- **`data/`** contains the actual table data files.
 
-Iceberg uses the **metadata/** directory to manage partitioning and versioning, without relying on Hive Metastore. The **data/** directory contains the actual table data files.
+Iceberg uses the **`metadata/`** directory to manage partitioning and versioning, without relying on Hive Metastore. The **`data/`    ** directory contains the actual table data files.
 
 ### Code Example
 
-```
--- Get the Iceberg table definition
-spark.sql("SHOW CREATE TABLE default.managed_countries").show(truncate=False)
-```
+!!! tip "IMPALA"
+    ```
+    -- Get the Iceberg table definition
+    SHOW CREATE TABLE default.managed_countries;
+    ```
 
-```
-# Check the Object Store directory for Iceberg metadata and data
-[jturkington@XYZ-es01 ~]$ hdfs dfs -ls s3a://.../external/hive/default.db/managed_countries/metadata
-```
+!!! tip "BASH"
+    ```
+    # Check the Object Store directory for Iceberg metadata and data
+    [jturkington@XYZ-es01 ~]$ hdfs dfs -ls s3a://.../external/hive/default.db/managed_countries/metadata
+    ```
 
-```
--rw-r--r--   3 jturkington hive       1710 2025-02-05 12:55 hdfs://.../external/hive/default.db/managed_countries/metadata/00000-bc161db1-05f2-4d64-baab-69ca2070db33.metadata.json
--rw-r--r--   3 jturkington hive       6072 2025-02-05 04:05 hdfs://.../external/hive/default.db/managed_countries/metadata/3ecfea4f-9e06-45a9-bd7c-430fe4758283-m0.avro
--rw-r--r--   3 jturkington hive       3800 2025-02-05 12:55 hdfs://.../external/hive/default.db/managed_countries/metadata/snap-1185275548636187694-1-f7f549e1-bd07-44da-b170-8973c2e6e3d6.avro
-```
+    ```
+    -rw-r--r--   3 jturkington hive       1710 2025-02-05 12:55 hdfs://.../external/hive/default.db/managed_countries/metadata/00000-bc161db1-05f2-4d64-baab-69ca2070db33.metadata.json
+    -rw-r--r--   3 jturkington hive       6072 2025-02-05 04:05 hdfs://.../external/hive/default.db/managed_countries/metadata/3ecfea4f-9e06-45a9-bd7c-430fe4758283-m0.avro
+    -rw-r--r--   3 jturkington hive       3800 2025-02-05 12:55 hdfs://.../external/hive/default.db/managed_countries/metadata/snap-1185275548636187694-1-f7f549e1-bd07-44da-b170-8973c2e6e3d6.avro
+    ```
 
 ### Understanding the Metadata Files
 Iceberg uses several types of metadata files to track table state and manage its partitions. Below are the types of metadata files found in the metadata/ directory.
