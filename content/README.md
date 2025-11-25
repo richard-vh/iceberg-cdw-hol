@@ -46,33 +46,33 @@ An **Iceberg Table** is a table where Iceberg manages both the metadata and the 
 ### Table Creation Example
 
 !!! success "Impala"
-```sql
--- Drop the table if it exists
-DROP TABLE IF EXISTS default.managed_countries;
-
--- Create the table in Impala
-CREATE TABLE default.managed_countries (
-country_code STRING,
-country_name STRING,
-population INT,
-area DOUBLE
-) STORED AS ICEBERG;
-
--- Insert data into the table
-INSERT INTO default.managed_countries VALUES
-('FR', 'France', 67391582, 643801.0),
-('DE', 'Germany', 83149300, 357022.0),
-('IT', 'Italy', 60262770, 301340.0);
-
--- Read data from the table
-SELECT * FROM default.managed_countries;
-
--- Describe the table to show its schema
-DESCRIBE FORMATTED default.managed_countries;
-
--- Show the table's creation script
-SHOW CREATE TABLE default.managed_countries;
-```
+    ```sql
+    -- Drop the table if it exists
+    DROP TABLE IF EXISTS default.managed_countries;
+    
+    -- Create the table in Impala
+    CREATE TABLE default.managed_countries (
+    country_code STRING,
+    country_name STRING,
+    population INT,
+    area DOUBLE
+    ) STORED AS ICEBERG;
+    
+    -- Insert data into the table
+    INSERT INTO default.managed_countries VALUES
+    ('FR', 'France', 67391582, 643801.0),
+    ('DE', 'Germany', 83149300, 357022.0),
+    ('IT', 'Italy', 60262770, 301340.0);
+    
+    -- Read data from the table
+    SELECT * FROM default.managed_countries;
+    
+    -- Describe the table to show its schema
+    DESCRIBE FORMATTED default.managed_countries;
+    
+    -- Show the table's creation script
+    SHOW CREATE TABLE default.managed_countries;
+    ```
 
 ## 2. Understanding Iceberg Storage
 
