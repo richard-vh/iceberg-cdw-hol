@@ -32,11 +32,13 @@ An **Iceberg Table** is a table where Iceberg manages both the metadata and the 
 ### Key Benefits and Limitations
 
 **Benefits:** 
+
 * Simplified data management.
 * Automatic metadata handling.
 * Built-in features like time travel and schema evolution.
 
 **Limitations:** 
+
 * Dropping the table automatically deletes all data.
 
 
