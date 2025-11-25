@@ -325,3 +325,91 @@ Merge-on-Read (MOR) is where, instead of rewriting large files for every modific
 
     SHOW TBLPROPERTIES default.USERNAME_mor_european_countries;
     ```
+## 5. Schema and Partition Evolution
+
+### Schema Evolution in Iceberg
+
+Schema evolution allows you to modify table structures over time while ensuring historical data remains accessible without requiring a full table rewrite.
+
+**Schema Evolution Operations include:**
+*   Adding new columns.
+*   Renaming existing columns.
+*   Changing column types (if compatible).
+*   Dropping columns.
+
+Schema evolution is important for adapting to business needs, maintaining backwards compatibility, and simplifying data management by allowing incremental changes.
+
+**Example Schema Evolution (SPARK):**
+
+```sql
+# Add a new column to the table
+spark.sql("""
+ALTER TABLE default.zoo_animals_schema_evo ADD COLUMN habitat STRING
+""")
+
+# Rename an existing column
+spark.sql("""
+ALTER TABLE default.zoo_animals_schema_evo RENAME COLUMN animal_name TO species_name
+""")
+```
+
+### Partition Evolution
+
+Partition evolution is the ability to modify the partitioning strategy of an Iceberg table after its creation, such as changing the partitioning key or adding new partitioning columns. This is unlike traditional partitioning schemes because it allows flexible evolution without needing to rewrite the entire dataset.
+
+**Partition Management Strategies:**
+*   Time-based partitioning for time-series data.
+*   Range or hash partitioning for balancing data across partitions.
+*   The partitioning strategy can be changed after the table has been created, even if data already exists.
+
+**Example Partition Evolution (SPARK):**
+
+```sql
+# Create the initial Iceberg table partitioned by 'animal_id'
+CREATE TABLE default.zoo_animals_partition_evo (
+animal_id STRING,
+species_name STRING,
+habitat STRING
+)
+USING iceberg
+PARTITIONED BY (animal_id)
+
+# Change the partitioning scheme to partition by both 'animal_id' and 'habitat'
+spark.sql(""" ALTER TABLE default.zoo_animals_partition_evo ADD PARTITION FIELD habitat""")
+```
+New data inserted after the partitioning change will adhere to the new scheme.
+
+## 6. Time Travel and Rollbacks
+
+### Time Travel in Iceberg
+
+Time travel allows you to query a table as it existed at a specific point in the past, leveraging Iceberg's snapshot-based architecture. You can specify a timestamp or snapshot ID when querying the table.
+
+**Time Travel Benefits:**
+*   Enables **historical queries** for auditing and investigating historical trends.
+*   Allows **data recovery** from accidental corruption.
+*   Simplifies rollbacks by querying an earlier snapshot.
+
+**Example Time Travel (SPARK):**
+After listing available snapshots (using `default.european_cars_time_travel.snapshots`):
+
+```sql
+# Fetch a specific snapshot ID, e.g., rollback_snapshot_id_1
+# Travel back to when the USA Cars weren't present in the table
+df_time_travel = spark.sql(f"""
+SELECT * FROM default.european_cars_time_travel VERSION AS OF {rollback_snapshot_id_1}
+""")
+df_time_travel.show()
+```
+
+### Rollback Using Snapshots
+
+Rollback reverts the table's current state to a specific snapshot, undoing subsequent changes. The rollback operation restores the table to the state of the specified snapshot.
+
+**Example Rollback (SPARK):**
+
+```sql
+# Assume 'first_snapshot' is the ID of the desired state
+# Call the Roll Back Command
+spark.sql(f"CALL spark_catalog.system.rollback_to_snapshot('default.european_cars_rollback', {first_snapshot})").show()
+```
