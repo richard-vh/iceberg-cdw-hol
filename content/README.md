@@ -97,7 +97,8 @@ Iceberg uses the **`metadata/`** directory to manage partitioning and versioning
 ### Code Example
 
 !!! tip "IMPALA"
-    ```
+    ```sql
+    -- Get the Iceberg table definition
     SHOW CREATE TABLE default.USERNAME_managed_countries;
     ```
 
