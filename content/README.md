@@ -145,7 +145,7 @@ These components work together to support partitioning, versioning, and time tra
 
 ## 3. Inserts, Updates, and Deletes
 
-In Iceberg, data manipulation (insertions, updates, deletions) is performed using standard SQL commands.
+In Iceberg, data manipulation (inserts, updates, deletes) is performed using standard SQL commands.
 
 ### Inserting & Updating Data
 
@@ -239,44 +239,46 @@ Iceberg tables support different storage strategies to balance performance, stor
 ### Iceberg Copy-on-Write (COW) Table
 
 **What is it?**
+
 A Copy-on-Write (COW) table creates a new version of the data on each modification, and the old data is not overwritten.
 
 **Key Features:**
-*   Ensures immutability.
-*   Ideal for ACID transaction support.
-*   Suitable for batch jobs where data doesn't change frequently.
-*   Old versions of data can be retained for audit purposes.
-*   Iceberg is **Copy-on-Write (COW) by default**.
+
+* Ensures immutability.
+* Ideal for ACID transaction support.
+* Suitable for batch jobs where data doesn't change frequently.
+* Old versions of data can be retained for audit purposes.
+* Iceberg is **Copy-on-Write (COW) by default**.
 
 ### Iceberg Merge-on-Read (MOR) Table
 
 **What is it?**
+
 Merge-on-Read (MOR) tables store changes as **delta files** instead of rewriting entire data files, optimizing write performance. These delta files are merged at query time.
 
 **Key Use Cases:**
-*   Real-time ingestion of frequently updated data.
-*   Event-driven architectures where append operations dominate.
-*   Optimized for streaming workloads, reducing write latency while maintaining historical changes.
 
-**How to create an MOR Table (SPARK):**
+* Real-time ingestion of frequently updated data.
+* Event-driven architectures where append operations dominate.
+* Optimized for streaming workloads, reducing write latency while maintaining historical changes.
 
-```sql
-# CREATE ICEBERG MERGE-ON-READ TABLE
-spark.sql("""
-CREATE TABLE default.mor_european_countries (
-country_code STRING,
-country_name STRING,
-population BIGINT,
-area_km2 DOUBLE,
-last_updated TIMESTAMP
-)
-USING iceberg
-TBLPROPERTIES (
-'format-version'='2',
-'write.format.default'='parquet',
-'write.delete.mode'='merge-on-read',
-'write.update.mode'='merge-on-read',
-'write.merge.mode'='merge-on-read'
-)
-""")
-```
+**How to create an MOR Table:**
+
+!!! tip "IMPALA"
+    ```sql
+    CREATE TABLE default.mor_european_countries (
+    country_code STRING,
+    country_name STRING,
+    population BIGINT,
+    area_km2 DOUBLE,
+    last_updated TIMESTAMP
+    )
+    USING iceberg
+    TBLPROPERTIES (
+    'format-version'='2',
+    'write.format.default'='parquet',
+    'write.delete.mode'='merge-on-read',
+    'write.update.mode'='merge-on-read',
+    'write.merge.mode'='merge-on-read'
+    );
+    ```
