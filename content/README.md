@@ -105,7 +105,9 @@ Iceberg uses the **`metadata/`** directory to manage partitioning and versioning
 
 
 ### Understanding the Metadata Files
-Iceberg uses several types of metadata files to track table state and manage its partitions. Below are the types of metadata files found in the metadata/ directory.
+Iceberg uses several types of metadata files to track table state and manage its partitions. Below are the types of metadata files found in the **`metadata/`** directory.
+
+![alt text](/content/assets/images/iceberg_file_structure.png)
 
 #### <ins>Metadata JSON Files (*.metadata.json)</ins>
 **Example Files:**
