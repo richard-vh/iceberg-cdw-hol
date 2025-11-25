@@ -2,7 +2,7 @@
 
 This document explores some of the core features of Apache Iceberg, including table creation, data insertion, schema evolution, and time travel.
 
-!!! note
+!!! note "Enter your assigned username"
     <div style="display: flex; align-items: center; margin-right: 1rem;">
             <input type="text" id="user-username-input" placeholder="Your Username" style="padding: 4px 8px; border-radius: 4px; border: none; margin-right: 5px; color: black;">
             <button id="user-username-save" style="cursor: pointer; padding: 4px 8px; border-radius: 4px; border: none; background: rgba(255,255,255,0.2); color: white;">Set</button>
