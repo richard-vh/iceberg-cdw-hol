@@ -234,51 +234,78 @@ Iceberg uses a **snapshot mechanism**, so deletions add a new snapshot but do no
 
 ## 4. Iceberg Table Types (COW and MOR)
 
-Iceberg tables support different storage strategies to balance performance, storage efficiency, and query speed.
+Iceberg tables support different storage strategies to balance performance, storage efficiency, and query speed. This section introduces the two primary approaches.
+
+* **Copy-on-Write (COW)**: Ensures immutability by writing new files on every update, making it ideal for ACID transactions and historical auditing.
+* **Merge-on-Read (MOR)**: Optimizes write performance by storing changes as delta files, merging them at query time—useful for real-time ingestion.
+
+Each strategy has trade-offs, making them suitable for different workloads.
+
+**Merge-On-Read (MOR)**
+
+* Writes are efficient.
+* Reads are less efficient due to read amplification, but regularly scheduled compaction can reduce inefficiency.
+* A good choice when streaming.
+* A good choice when frequently writing or updating, such as running hourly batch jobs.
+* A good choice when the percentage of data change is low.
+
+**Copy-On-Write (COW)**
+
+* Reads are efficient.
+* A good choice for bulk updates and deletes, such as running a daily batch job.
+* Writes less efficient due to write amplification, but the need for compaction is reduced.
+* A good choice when the percentage of data change is high.
 
 ### Iceberg Copy-on-Write (COW) Table
 
 **What is it?**
 
-A Copy-on-Write (COW) table creates a new version of the data on each modification, and the old data is not overwritten.
+Copy-on-Write (COW) is where instead of modifying data directly, the system creates a complete copy of the data file with the changes applied. This method makes reading data incredibly fast and efficient, as queries can simply access a clean, final version of a file without any extra processing. The downside, however, is that writing data can be slow and expensive. Even a tiny update to a single row forces the entire file to be duplicated and rewritten. This makes frequent, small changes inefficient and can lead to conflicts if multiple writes occur at the same time. While this approach is poorly suited for minor edits, it becomes ideal for large, bulk updates where changing a significant portion of the file is necessary anyway.
 
-**Key Features:**
+**How to create an COW Table:**
 
-* Ensures immutability.
-* Ideal for ACID transaction support.
-* Suitable for batch jobs where data doesn't change frequently.
-* Old versions of data can be retained for audit purposes.
-* Iceberg is **Copy-on-Write (COW) by default**.
-
+!!! tip "IMPALA"
+    ```sql
+    CREATE TABLE default.cow_european_countries (
+        country_code STRING,
+        country_name STRING,
+        population BIGINT,
+        area_km2 DOUBLE,
+        last_updated TIMESTAMP
+        )
+    USING iceberg
+    TBLPROPERTIES (
+        'write.format.default'='orc', 
+        'write.delete.mode'='copy-on-write',  -- Enable COW for delete operations
+        'write.update.mode'='copy-on-write',  -- Enable COW for update operations
+        'write.merge.mode'='copy-on-write'    -- Enable COW for compaction
+    );
+    ```
+    
 ### Iceberg Merge-on-Read (MOR) Table
 
 **What is it?**
 
-Merge-on-Read (MOR) tables store changes as **delta files** instead of rewriting entire data files, optimizing write performance. These delta files are merged at query time.
+Merge-on-Read (MOR) is where, instead of rewriting large files for every modification, changes are simply recorded in separate, smaller files. This approach makes writing new data, like updates or deletions, significantly faster. The trade-off is that more work is required during a read operation; the system must combine the original data with the separate change files on the fly to present the most current version. In Apache Iceberg, this is handled using delete files. When you update or delete a row, the change is logged in a delete file. During a query, Iceberg uses these delete files to know which rows to ignore from the old data files and which new rows to include. Eventually, compaction merges the original data and all the changes into new, clean files, which speeds up future reads.
 
-**Key Use Cases:**
-
-* Real-time ingestion of frequently updated data.
-* Event-driven architectures where append operations dominate.
-* Optimized for streaming workloads, reducing write latency while maintaining historical changes.
 
 **How to create an MOR Table:**
 
 !!! tip "IMPALA"
     ```sql
     CREATE TABLE default.mor_european_countries (
-    country_code STRING,
-    country_name STRING,
-    population BIGINT,
-    area_km2 DOUBLE,
-    last_updated TIMESTAMP
+        country_code STRING,
+        country_name STRING,
+        population BIGINT,
+        area_km2 DOUBLE,
+        last_updated TIMESTAMP
     )
     USING iceberg
     TBLPROPERTIES (
-    'format-version'='2',
-    'write.format.default'='parquet',
-    'write.delete.mode'='merge-on-read',
-    'write.update.mode'='merge-on-read',
-    'write.merge.mode'='merge-on-read'
+        'format-version'='2',
+        'write.format.default'='parquet',
+        'write.delete.mode'='merge-on-read',
+        'write.update.mode'='merge-on-read',
+        'write.merge.mode'='merge-on-read'
     );
     ```
