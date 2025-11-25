@@ -40,8 +40,8 @@ An **Iceberg Table** is a table where Iceberg manages both the metadata and the 
 - Dropping the table automatically deletes all data.
 
 
-> [!NOTE]
-> By default, when creating an Iceberg table, it will be a **Copy-on-Write (COW)** table. You can explicitly specify the table type as Copy-on-Write (COW) or Merge-on-Write (MOR) using table properties.
+!!! note
+    By default, when creating an Iceberg table, it will be a **Copy-on-Write (COW)** table. You can explicitly specify the table type as Copy-on-Write (COW) or Merge-on-Write (MOR) using table properties.
 
 ### Table Creation Example
 
