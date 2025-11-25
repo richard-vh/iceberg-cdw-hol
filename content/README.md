@@ -2,6 +2,12 @@
 
 This document explores some of the core features of Apache Iceberg, including table creation, data insertion, schema evolution, and time travel.
 
+<div class="username-input-container">
+    <input type="text" id="user-username-input" placeholder="e.g., john.doe">
+    <button id="user-username-save">Update Examples</button>
+    <button id="user-username-clear">Reset</button>
+</div>
+
 ## Table of Contents
 
 1.  [Creating Iceberg Tables](#1-creating-iceberg-tables)
