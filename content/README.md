@@ -496,7 +496,7 @@ Rollback in Iceberg allows you to revert the table's state to a specific snapsho
     SELECT * FROM default.USERNAME_european_cars_time_travel;
     ```
 
-## 6. Branching and Merging
+## 8. Branching and Merging
 
 ### Branching in Iceberg
 
@@ -584,7 +584,7 @@ Merging consolidates the changes made in a branch back into the main dataset. On
     ALTER TABLE default.USERNAME_healthcare_patient_data DROP BRANCH testing_branch;
     ```
 
-## 7. Tagging (Versioning)
+## 9. Tagging (Versioning)
 
 Tags label specific table versions (snapshots), making it easier to reference or roll back to that particular point in time. Tags simplify accessing a specific version of data, replacing the need to know the snapshot ID.
 
