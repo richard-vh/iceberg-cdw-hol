@@ -57,10 +57,10 @@ An **Iceberg Table** is a table where Iceberg manages both the metadata and the 
 !!! tip "IMPALA"
     ```sql
     -- Drop the table if it exists
-    DROP TABLE IF EXISTS default.<USERNAME>_managed_countries;
+    DROP TABLE IF EXISTS default.USERNAME_managed_countries;
     
     -- Create the table in Impala
-    CREATE TABLE default.<USERNAME>_managed_countries (
+    CREATE TABLE default.USERNAME_managed_countries (
     country_code STRING,
     country_name STRING,
     population INT,
@@ -68,19 +68,19 @@ An **Iceberg Table** is a table where Iceberg manages both the metadata and the 
     ) STORED AS ICEBERG;
     
     -- Insert data into the table
-    INSERT INTO default.<USERNAME>_managed_countries VALUES
+    INSERT INTO default.USERNAME_managed_countries VALUES
     ('FR', 'France', 67391582, 643801.0),
     ('DE', 'Germany', 83149300, 357022.0),
     ('IT', 'Italy', 60262770, 301340.0);
     
     -- Read data from the table
-    SELECT * FROM default.<USERNAME>_managed_countries;
+    SELECT * FROM default.USERNAME_managed_countries;
     
     -- Describe the table to show its schema
-    DESCRIBE FORMATTED default.<USERNAME>_managed_countries;
+    DESCRIBE FORMATTED default.USERNAME_managed_countries;
     
     -- Show the table's creation script
-    SHOW CREATE TABLE default.<USERNAME>_managed_countries;
+    SHOW CREATE TABLE default.USERNAME_managed_countries;
     ```
 
 ## 2. Understanding Iceberg Storage
