@@ -6,15 +6,6 @@ This document explores some of the core features of Apache Iceberg, including ta
 
 1.  [Creating Iceberg Tables](#1-creating-iceberg-tables)
 2.  [Understanding Iceberg Storage](#2-understanding-iceberg-storage)
-3.  [Inserts, Updates, and Deletes](#3-inserts-updates-and-deletes)
-4.  [Iceberg Table Types (COW and MOR)](#4-iceberg-table-types-cow-and-mor)
-7.  [Schema and Partition Evolution](#5-schema-and-partition-evolution)
-8.  [Time Travel and Rollbacks](#6-time-travel-and-rollbacks)
-9.  [Branching and Merging](#7-branching-and-merging)
-10. [Tagging (Versioning)](#8-tagging-versioning)
-11. [Table Migration](#9-table-migration)
-12. [Table Maintenance](#10-table-maintenance)
-13. [Useful Links](#11-useful-links)
 
 ---
 
