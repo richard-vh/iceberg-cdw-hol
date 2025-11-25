@@ -123,7 +123,7 @@ Iceberg uses several types of metadata files to track table state and manage its
 **Data Type:** Apache Avro format (binary, optimized for fast read/write).
 **Why?** Avro is compact and supports schema evolution, making it ideal for metadata storage. Using Avro instead of JSON for large metadata speeds up querying and file tracking.
 
-#### <ins>Snapshot Files (snap--.avro)</ins>
+#### <ins>Snapshot Files (snap-*.avro)</ins>
 **Example Files:**
 snap-1185275548636187694-1-f7f549e1-bd07-44da-b170-8973c2e6e3d6.avro
 
@@ -133,7 +133,7 @@ snap-1185275548636187694-1-f7f549e1-bd07-44da-b170-8973c2e6e3d6.avro
 
 ### How These Files Work Together in Iceberg
 
-**Metadata JSON file** (.metadata.json) defines the table schema and references snapshots.
+**Metadata JSON file** (*.metadata.json) defines the table schema and references snapshots.
 
 **Snapshot file** (snap-*.avro) records changes and links to manifest lists.
 
