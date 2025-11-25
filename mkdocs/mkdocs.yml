@@ -27,11 +27,11 @@ theme:
     # - navigation.expand
     # - navigation.indexes
     # - navigation.sections
-    - navigation.footer    
+    - navigation.footer
     - navigation.top
     - toc.integrate
 
-docs_dir: '../../content'
+docs_dir: '../content'
 site_dir: './build'
 # not_in_nav: |
 extra_css:
@@ -64,9 +64,9 @@ markdown_extensions:
   - pymdownx.snippets
   - pymdownx.superfences
   - pymdownx.tabbed:
-      alternate_style: true  
+      alternate_style: true
   - pymdownx.tasklist:
-      custom_checkbox: true  
+      custom_checkbox: true
   - sane_lists: {}
   - toc:
       toc_depth: 3
