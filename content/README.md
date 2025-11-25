@@ -17,10 +17,10 @@ This document explores some of the core features of Apache Iceberg, including ta
 3.  [Iceberg Table Types (COW and MOR)](#3-iceberg-table-types-cow-and-mor)
 4.  [Schema and Partition Evolution](#4-schema-and-partition-evolution)
 5.  [Time Travel and Rollbacks](#5-time-travel-and-rollbacks)
-6.  [Branching and Merging](#6-branching-and-merging)
-7.  [Tagging (Versioning)](#7-tagging-versioning)
-8.  [Table Migration](#8-table-migration)
-9.  [Table Maintenance](#9-table-maintenance)
+6.  [Table Migration](#6-table-migration)
+7.  [Table Maintenance](#7-table-maintenance)
+8.  [Branching and Merging](#8-branching-and-merging)
+9.  [Tagging (Versioning)](#9-tagging-versioning)
 10. [Understanding Iceberg Storage](#10-understanding-iceberg-storage)
 11. [Useful Links](#11-useful-links)
 
@@ -494,6 +494,148 @@ Rollback in Iceberg allows you to revert the table's state to a specific snapsho
     
     -- CHECK DATA AFTER ROLLBACK
     SELECT * FROM default.USERNAME_european_cars_time_travel;
+    ```
+
+## 6. Branching and Merging
+
+### Branching in Iceberg
+
+Branching lets you create isolated environments to work with data (inserting, updating, deleting) without affecting the main production dataset. This is useful for testing new features, running experiments, or isolating changes before they are stable.
+
+**Why and when to use branches?**
+
+* Testing new features (e.g., testing new health metrics without affecting the existing production data).
+* Running experiments or simulations.
+* Isolating changes until they are confirmed to be stable and ready to be merged.
+* Collaborating with different teams on separate data versions before consolidating the changes.
+
+**Example Branching:**
+
+!!! tip "HIVE"
+    ```sql
+    -- DROP THE TABLE IF IT EXISTS, SO WE CAN RERUN THE CODE
+    DROP TABLE IF EXISTS default.USERNAME_healthcare_patient_data;
+    
+    -- CREATE AN ICEBERG TABLE FOR HEALTHCARE PATIENT DATA
+    CREATE TABLE default.USERNAME_healthcare_patient_data (
+        patient_id STRING,
+        patient_name STRING,
+        age INT,
+        diagnosis STRING,
+        treatment STRING,
+        doctor STRING
+    )
+    USING iceberg;
+    
+    -- INSERT INITIAL PATIENT DATA INTO THE BASE TABLE (CREATES A SNAPSHOT)
+    INSERT INTO default.USERNAME_healthcare_patient_data VALUES 
+        ('P001', 'John Doe', 45, 'Hypertension', 'Beta-blockers', 'Dr. Smith'),
+        ('P002', 'Jane Roe', 50, 'Diabetes', 'Insulin', 'Dr. Johnson');
+    
+    -- CREATE A BRANCH
+    ALTER TABLE default.USERNAME_healthcare_patient_data CREATE BRANCH testing_branch;
+    
+    -- INSERT DATA INTO THE NEW BRANCH
+    INSERT INTO default.USERNAME_healthcare_patient_data.branch_testing_branch VALUES 
+        ('P999', 'Richard V', 99, 'Headache', 'Time', 'Dr. Jeff');
+    
+    -- VERIFY THE BRANCH DATA
+    SELECT * FROM default.USERNAME_healthcare_patient_data.branch_testing_branch;
+    
+    -- MAIN TABLE REMAINS UNAFFECTED
+    SELECT * FROM default.USERNAME_healthcare_patient_data;
+    ```
+
+### Merging Branches in Iceberg
+
+Merging consolidates the changes made in a branch back into the main dataset. Only new or modified records are merged. This allows updates, experiments, or testing to be brought into the mainline data once they are confirmed to be stable or necessary.
+
+**How merging works in Iceberg**
+
+* You can merge changes from a branch back into the main dataset.
+* The merge operation only applies changes from the branch and doesn't affect the main branch unless there are new or modified records that need to be merged.
+* Iceberg provides methods to merge only certain changes from a branch or completely merge all data between branches.
+
+**Example Merging:**
+
+!!! tip "HIVE"
+    ```sql
+    -- INSERT MORE PATIENT DATA INTO THE BASE TABLE (CREATES A SNAPSHOT)
+    INSERT INTO default.USERNAME_healthcare_patient_data VALUES 
+        ('P001', 'John Roe', 415, 'Hypertension', 'Beta-blockers', 'Dr. Smith'),
+        ('P002', 'Jane Poe', 511, 'Diabetes', 'Insulin', 'Dr. Johnson');
+    
+    -- MERGE THE BRANCH BACK INTO THE BASE TABLE
+    MERGE INTO default.USERNAME_healthcare_patient_data AS base
+        USING default.USERNAME_healthcare_patient_data.branch_testing_branch AS branch
+        ON base.patient_id = branch.patient_id
+        WHEN MATCHED THEN UPDATE SET base.patient_name = branch.patient_name,
+                                     base.age = branch.age,
+                                     base.diagnosis = branch.diagnosis,
+                                     base.treatment = branch.treatment,
+                                     base.doctor = branch.doctor
+        WHEN NOT MATCHED THEN INSERT (patient_id, patient_name, age, diagnosis, treatment, doctor)
+        VALUES (branch.patient_id, branch.patient_name, branch.age, branch.diagnosis, branch.treatment, branch.doctor);
+    
+    -- VIEW THE MERGED TABLE DATA
+    SELECT * FROM default.USERNAME_healthcare_patient_data;
+    
+    -- DROP THE BRANCH AFTER THE MERGE IF NO LONGER NEEDED
+    ALTER TABLE default.USERNAME_healthcare_patient_data DROP BRANCH testing_branch;
+    ```
+
+## 7. Tagging (Versioning)
+
+Tags label specific table versions (snapshots), making it easier to reference or roll back to that particular point in time. Tags simplify accessing a specific version of data, replacing the need to know the snapshot ID.
+
+**How to Use Tags:**
+
+* Versioning: Tags allow you to mark versions of data with meaningful names like v1.0, snapshot_2025_01_01, or test_run.
+* Metadata Management: You can attach custom metadata to snapshots, such as the name of the person who performed a change or the reason for a particular change.
+* Tags can be helpful when needing to easily access a specific version or snapshot of data without remembering the snapshot ID.
+
+**Example Tagging and Querying:**
+
+!!! tip "HIVE"
+    ```sql
+    -- DROP THE LANDMARKS TABLE IF IT EXISTS
+    DROP TABLE IF EXISTS default.USERNAME_belfast_landmarks;
+    
+    -- CREATE ICEBERG TABLE TO STORE LANDMARK DATA
+    CREATE TABLE IF NOT EXISTS default.USERNAME_belfast_landmarks (
+        landmark_id STRING,
+        landmark_name STRING,
+        location STRING,
+        description STRING
+    )
+    USING iceberg;
+    
+    -- INSERT SAMPLE DATA INTO THE LANDMARKS TABLE
+    INSERT INTO default.USERNAME_belfast_landmarks VALUES 
+        ('L001', 'Titanic Belfast', 'Belfast', 'Interactive museum about the RMS Titanic'),
+        ('L002', 'Belfast Castle', 'Belfast', '19th-century castle offering views of the city and hills');
+    
+    -- CREATE TAG FOR THE LANDMARKS TABLE WITH RETENTION PERIOD
+    ALTER TABLE default.USERNAME_belfast_landmarks CREATE TAG MY_TAG RETAIN 5 DAYS;
+    
+    -- INSERT ADDITIONAL SAMPLE DATA INTO THE LANDMARKS TABLE
+    INSERT INTO default.USERNAME_belfast_landmarks VALUES 
+        ('L003', 'Queen’s University Belfast', 'Belfast', 'A prestigious university known for its research and history'),
+        ('L004', 'Stormont', 'Belfast', 'Northern Ireland’s parliament buildings and grounds'),
+        ('L005', 'Crumlin Road Gaol', 'Belfast', 'Historic prison turned into a museum'),
+        ('L006', 'Botanic Gardens', 'Belfast', 'Public gardens featuring the Palm House and Tropical Ravine'),
+        ('L007', 'Ulster Museum', 'Belfast', 'A museum housing art, history, and natural sciences exhibits'),
+        ('L008', 'Titanic Dry Dock', 'Belfast', 'The historic dock where the RMS Titanic was fitted out');
+    
+    
+    -- QUERY AND DISPLAY THE DATA INSERTED INTO THE LANDMARKS TABLE
+    SELECT * FROM default.USERNAME_belfast_landmarks;
+    
+    -- QUERY AND DISPLAY REFERENCE DATA (TAGS) FOR THE LANDMARKS TABLE
+    SELECT * FROM default.USERNAME_belfast_landmarks.refs;
+    
+    -- QUERY THE TABLE USING THE CREATED TAG TO SEE THE SNAPSHOT AT THAT SPECIFIC POINT IN TIME
+    SELECT * FROM default.USERNAME_belfast_landmarks VERSION AS OF 'MY_TAG';
     ```
 
 ## 10. Understanding Iceberg Storage
