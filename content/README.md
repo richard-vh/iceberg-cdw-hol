@@ -142,3 +142,92 @@ snap-1185275548636187694-1-f7f549e1-bd07-44da-b170-8973c2e6e3d6.avro
 **Manifest list file** (*-m0.avro) references manifest files that contain details of individual data files.
 
 These components work together to support partitioning, versioning, and time travel, allowing Iceberg to provide robust table management with features like schema evolution and data consistency.
+
+## 3. Inserts, Updates, and Deletes
+
+In Iceberg, data manipulation (insertions, updates, deletions) is performed using standard SQL commands.
+
+### Inserting & Updating Data
+
+Updates modify existing records based on a condition.
+
+**Best Practices:**
+*   Ensure the schema is well-defined.
+*   Perform updates only when necessary to avoid frequent schema changes.
+*   Monitor table performance as data grows, especially with large updates.
+
+**Example Update (SPARK):**
+```sql
+# Updating data for a football team
+spark.sql("""
+UPDATE default.english_football_teams
+SET team_stadium = 'New Stamford Bridge'
+WHERE team_id = 'T003'
+""")
+```
+
+### Handling Data Deletions
+
+Iceberg uses a **snapshot mechanism**, so deletions add a new snapshot but do not immediately remove the physical data. This ensures that deleted data can still be recovered.
+
+**Considerations:**
+*   Deletions are versioned and can be reverted through time travel.
+*   You can configure Iceberg to perform data compaction after deletion for performance optimization.
+
+**Example Deletion (SPARK):**
+```sql
+# Deleting data from the table (removing Chelsea)
+spark.sql("""
+DELETE FROM default.english_football_teams
+WHERE team_id = 'T003'
+""")
+```
+
+## 4. Iceberg Table Types (COW and MOR)
+
+Iceberg tables support different storage strategies to balance performance, storage efficiency, and query speed.
+
+### Iceberg Copy-on-Write (COW) Table
+
+**What is it?**
+A Copy-on-Write (COW) table creates a new version of the data on each modification, and the old data is not overwritten.
+
+**Key Features:**
+*   Ensures immutability.
+*   Ideal for ACID transaction support.
+*   Suitable for batch jobs where data doesn't change frequently.
+*   Old versions of data can be retained for audit purposes.
+*   Iceberg is **Copy-on-Write (COW) by default**.
+
+### Iceberg Merge-on-Read (MOR) Table
+
+**What is it?**
+Merge-on-Read (MOR) tables store changes as **delta files** instead of rewriting entire data files, optimizing write performance. These delta files are merged at query time.
+
+**Key Use Cases:**
+*   Real-time ingestion of frequently updated data.
+*   Event-driven architectures where append operations dominate.
+*   Optimized for streaming workloads, reducing write latency while maintaining historical changes.
+
+**How to create an MOR Table (SPARK):**
+
+```sql
+# CREATE ICEBERG MERGE-ON-READ TABLE
+spark.sql("""
+CREATE TABLE default.mor_european_countries (
+country_code STRING,
+country_name STRING,
+population BIGINT,
+area_km2 DOUBLE,
+last_updated TIMESTAMP
+)
+USING iceberg
+TBLPROPERTIES (
+'format-version'='2',
+'write.format.default'='parquet',
+'write.delete.mode'='merge-on-read',
+'write.update.mode'='merge-on-read',
+'write.merge.mode'='merge-on-read'
+)
+""")
+```
