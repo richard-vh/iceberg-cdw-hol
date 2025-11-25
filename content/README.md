@@ -60,7 +60,7 @@ An **Iceberg Table** is a table where Iceberg manages both the metadata and the 
     DROP TABLE IF EXISTS default.managed_countries;
     
     -- Create the table in Impala
-    CREATE TABLE default.managed_countries (
+    CREATE TABLE default.YOUR_USERNAME_managed_countries (
     country_code STRING,
     country_name STRING,
     population INT,
