@@ -156,15 +156,39 @@ Updates modify existing records based on a condition.
 *   Perform updates only when necessary to avoid frequent schema changes.
 *   Monitor table performance as data grows, especially with large updates.
 
-**Example Update (SPARK):**
-```sql
-# Updating data for a football team
-spark.sql("""
-UPDATE default.english_football_teams
-SET team_stadium = 'New Stamford Bridge'
-WHERE team_id = 'T003'
-""")
-```
+**Code Example**
+
+!!! tip "IMPALA"
+    ```sql
+    -- Drop the table if it exists
+    DROP TABLE IF EXISTS default.english_football_teams;
+    
+    -- Create the table for football teams in England
+    CREATE TABLE default.english_football_teams (
+        team_id STRING,
+        team_name STRING,
+        team_city STRING,
+        team_stadium STRING
+    ) STORED AS ICEBERG;
+    
+    -- Inserting data into the table
+    INSERT INTO default.english_football_teams 
+    VALUES 
+    ('T001', 'Manchester United', 'Manchester', 'Old Trafford'),
+    ('T002', 'Liverpool', 'Liverpool', 'Anfield'),
+    ('T003', 'Chelsea', 'London', 'Stamford Bridge');
+    
+    -- Select all data from the table
+    SELECT * FROM default.english_football_teams;
+    
+    -- Update Stadium Name
+    UPDATE default.english_football_teams 
+    SET team_stadium = 'New Stamford Bridge' 
+    WHERE team_id = 'T003';
+    
+    -- Select the updated data
+    SELECT * FROM default.english_football_teams;
+    ```
 
 ### Handling Data Deletions
 
@@ -174,14 +198,37 @@ Iceberg uses a **snapshot mechanism**, so deletions add a new snapshot but do no
 *   Deletions are versioned and can be reverted through time travel.
 *   You can configure Iceberg to perform data compaction after deletion for performance optimization.
 
-**Example Deletion (SPARK):**
-```sql
-# Deleting data from the table (removing Chelsea)
-spark.sql("""
-DELETE FROM default.english_football_teams
-WHERE team_id = 'T003'
-""")
-```
+**Code Example**
+
+!!! tip "IMPALA"
+    ```sql
+    -- Drop the table if it exists
+    DROP TABLE IF EXISTS default.english_football_teams;
+    
+    -- Create the table for football teams in England with ICEBERG storage
+    CREATE TABLE default.english_football_teams (
+        team_id STRING,
+        team_name STRING,
+        team_city STRING,
+        team_stadium STRING
+    ) STORED AS ICEBERG;
+    
+    -- Inserting data into the table
+    INSERT INTO default.english_football_teams 
+    VALUES 
+    ('T001', 'Manchester United', 'Manchester', 'Old Trafford'),
+    ('T002', 'Liverpool', 'Liverpool', 'Anfield'),
+    ('T003', 'Chelsea', 'London', 'Stamford Bridge');
+    
+    -- Select all data from the table
+    SELECT * FROM default.english_football_teams;
+    
+    -- Delete using Team ID 
+    DELETE FROM default.english_football_teams WHERE team_id = 'T003';
+    
+    -- Select the updated data
+    SELECT * FROM default.english_football_teams;
+    ```
 
 ## 4. Iceberg Table Types (COW and MOR)
 
