@@ -117,14 +117,6 @@ Iceberg uses several types of metadata files to track table state and manage its
 **Data Type:** JSON format (human-readable, structured key-value pairs).<br/>
 **Why?** JSON allows Iceberg to store metadata in a flexible, easily accessible format. New versions can be created without modifying existing files, enabling schema evolution.
 
-#### <ins>Manifest List Files (*-m0.avro)</ins>
-**Example Files:**
-3ecfea4f-9e06-45a9-bd7c-430fe4758283-m0.avro
-
-**Purpose:** Stores a list of manifest files associated with a snapshot. Helps Iceberg quickly determine which data files belong to which snapshot without scanning the entire table.<br/>
-**Data Type:** Apache Avro format (binary, optimized for fast read/write).<br/>
-**Why?** Avro is compact and supports schema evolution, making it ideal for metadata storage. Using Avro instead of JSON for large metadata speeds up querying and file tracking.
-
 #### <ins>Snapshot Files (snap-*.avro)</ins>
 **Example Files:**
 snap-1185275548636187694-1-f7f549e1-bd07-44da-b170-8973c2e6e3d6.avro
@@ -132,6 +124,14 @@ snap-1185275548636187694-1-f7f549e1-bd07-44da-b170-8973c2e6e3d6.avro
 **Purpose:** Tracks table state at a specific point in time (snapshot ID, timestamp, manifest list, etc.). Allows for time travel and rollbacks to previous versions of the table.<br/>
 **Data Type:** Apache Avro format (binary, optimized for structured data storage).<br/>
 **Why?** Storing snapshots in Avro provides efficient serialization while keeping metadata compact and performant. Enables fast lookup of previous states for Iceberg’s time travel feature.
+
+#### <ins>Manifest List Files (*-m0.avro)</ins>
+**Example Files:**
+3ecfea4f-9e06-45a9-bd7c-430fe4758283-m0.avro
+
+**Purpose:** Stores a list of manifest files associated with a snapshot. Helps Iceberg quickly determine which data files belong to which snapshot without scanning the entire table.<br/>
+**Data Type:** Apache Avro format (binary, optimized for fast read/write).<br/>
+**Why?** Avro is compact and supports schema evolution, making it ideal for metadata storage. Using Avro instead of JSON for large metadata speeds up querying and file tracking.
 
 ### How These Files Work Together in Iceberg
 
