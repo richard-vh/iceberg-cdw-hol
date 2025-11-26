@@ -221,7 +221,7 @@ Copy-on-Write (COW) is where instead of modifying data directly, the system crea
         'write.merge.mode'='copy-on-write'    -- Enable COW for compaction
     );
 
-    SHOW TBLPROPERTIES default.USERNAME_cow_european_countries;
+    DESCRIBE EXTENDED default.USERNAME_cow_european_countries;
     ```
     
 ### Iceberg Merge-on-Read (MOR) Table
@@ -252,7 +252,7 @@ Merge-on-Read (MOR) is where, instead of rewriting large files for every modific
         'write.merge.mode'='merge-on-read'
     );
 
-    SHOW TBLPROPERTIES default.USERNAME_mor_european_countries;
+    DESCRIBE EXTENDED default.USERNAME_mor_european_countries;
     ```
 ## 4. Schema and Partition Evolution
 
