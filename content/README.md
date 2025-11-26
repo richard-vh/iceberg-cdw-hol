@@ -595,7 +595,7 @@ Iceberg compaction is the process of merging small data files within an Iceberg 
 !!! tip "IMPALA"
     ```sql
     -- DROP THE TABLE IF IT EXISTS
-    DROP TABLE IF EXISTS default.USERNAME__machinery_compaction;
+    DROP TABLE IF EXISTS default.USERNAME_machinery_compaction;
     
     -- CREATE A NEW ICEBERG TABLE FOR CONSTRUCTION MACHINERY
     CREATE TABLE default.USERNAME_machinery_compaction (
