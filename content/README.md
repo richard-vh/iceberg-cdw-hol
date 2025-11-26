@@ -66,7 +66,7 @@ An **Iceberg Table** is a table where Iceberg manages both the metadata and the 
         country_name STRING,
         population INT,
         area DOUBLE
-    ) STORED BY ICEBERG;
+    ) STORED AS ICEBERG;
     
     -- Insert data into the table
     INSERT INTO default.USERNAME_managed_countries VALUES
@@ -111,7 +111,7 @@ Updates modify existing records based on a condition.
         team_name STRING,
         team_city STRING,
         team_stadium STRING
-    ) STORED BY ICEBERG;
+    ) STORED AS ICEBERG;
     
     -- Inserting data into the table
     INSERT INTO default.USERNAME_english_football_teams VALUES 
@@ -156,11 +156,10 @@ Iceberg uses a **snapshot mechanism**, so deletions add a new snapshot but do no
     ) STORED AS ICEBERG;
     
     -- Inserting data into the table
-    INSERT INTO default.USERNAME_english_football_teams 
-    VALUES 
-    ('T001', 'Manchester United', 'Manchester', 'Old Trafford'),
-    ('T002', 'Liverpool', 'Liverpool', 'Anfield'),
-    ('T003', 'Chelsea', 'London', 'Stamford Bridge');
+    INSERT INTO default.USERNAME_english_football_teams VALUES 
+        ('T001', 'Manchester United', 'Manchester', 'Old Trafford'),
+        ('T002', 'Liverpool', 'Liverpool', 'Anfield'),
+        ('T003', 'Chelsea', 'London', 'Stamford Bridge');
     
     -- Select all data from the table
     SELECT * FROM default.USERNAME_english_football_teams;
@@ -214,8 +213,7 @@ Copy-on-Write (COW) is where instead of modifying data directly, the system crea
         population BIGINT,
         area_km2 DOUBLE,
         last_updated TIMESTAMP
-        )
-    USING iceberg
+    ) STORED AS ICEBERG
     TBLPROPERTIES (
         'write.format.default'='orc', 
         'write.delete.mode'='copy-on-write',  -- Enable COW for delete operations
@@ -245,8 +243,7 @@ Merge-on-Read (MOR) is where, instead of rewriting large files for every modific
         population BIGINT,
         area_km2 DOUBLE,
         last_updated TIMESTAMP
-    )
-    USING iceberg
+    ) STORED AS ICEBERG
     TBLPROPERTIES (
         'format-version'='2',
         'write.format.default'='parquet',
