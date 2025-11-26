@@ -2,7 +2,7 @@
 
 This document explores some of the core features of Apache Iceberg, including table creation, data insertion, schema evolution, and time travel.
 
-!!! note "Enter your assigned username"
+!!! note "Enter your assigned username e.g. user001"
     By entering your assigned username and clicking the **Update Examples** button, the code examples you'll be running below will make it easy to identify which tables are yours.
     <div class="username-input-container">
         <input type="text" id="user-username-input" placeholder="e.g., john.doe">
