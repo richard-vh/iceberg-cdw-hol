@@ -576,9 +576,7 @@ Creates a **new** Iceberg table and inserts data from an existing Parquet/Hive t
 
 ## 7. Table Maintenance
 
-### Iceberg Table Maintenance
-
-#### Iceberg Compaction
+### Iceberg Compaction
 
 Iceberg compaction is the process of merging small data files within an Iceberg table into larger files to improve query performance and reduce metadata overhead. Iceberg writes immutable files, and over time, frequent inserts, updates, and deletes can lead to many small files that impact efficiency.
 
@@ -634,7 +632,7 @@ Iceberg compaction is the process of merging small data files within an Iceberg 
     SHOW CREATE TABLE default.{}_machinery_compaction;
     ```
     
-#### Iceberg Expiring Snapshots
+### Iceberg Expiring Snapshots
 
 Iceberg maintains a history of table snapshots, allowing for time travel and rollback. Expiring snapshots is the process of removing older snapshots that are no longer needed to free up storage and improve metadata performance.
 
