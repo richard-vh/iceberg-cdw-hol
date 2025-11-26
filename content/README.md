@@ -599,10 +599,10 @@ Iceberg compaction is the process of merging small data files within an Iceberg 
 !!! tip "IMPALA"
     ```sql
     -- DROP THE TABLE IF IT EXISTS
-    DROP TABLE IF EXISTS default.{}_machinery_compaction;
+    DROP TABLE IF EXISTS default.USERNAME__machinery_compaction;
     
     -- CREATE A NEW ICEBERG TABLE FOR CONSTRUCTION MACHINERY
-    CREATE TABLE default.{}_machinery_compaction (
+    CREATE TABLE default.USERNAME_machinery_compaction (
         machine_id STRING,
         model STRING,
         manufacturer STRING,
@@ -612,26 +612,26 @@ Iceberg compaction is the process of merging small data files within an Iceberg 
     USING iceberg;
     
     -- INSERT MULTIPLE SMALL FILES BY WRITING DATA IN MULTIPLE TRANSACTIONS
-    INSERT INTO default.{}_machinery_compaction VALUES
+    INSERT INTO default.USERNAME_machinery_compaction VALUES
         ('M001', 'Excavator X1', 'Caterpillar', 12500.5, 'Active'),
         ('M002', 'Bulldozer B2', 'Komatsu', 14500.0, 'Inactive');
     
-    INSERT INTO default.{}_machinery_compaction VALUES
+    INSERT INTO default.USERNAME_machinery_compaction VALUES
         ('M003', 'Crane C3', 'Liebherr', 17500.2, 'Active'),
         ('M004', 'Dump Truck D4', 'Volvo', 22000.8, 'Active');
 
-    INSERT INTO default.{}_machinery_compaction VALUES
+    INSERT INTO default.USERNAME_machinery_compaction VALUES
         ('M005', 'Concrete Mixer CM5', 'Schwing Stetter', 9500.6, 'Inactive'),
         ('M006', 'Loader L6', 'John Deere', 12800.4, 'Active');
     
     -- VALIDATE THE DATA LOCATION AFTER INSERTIONS
-    SHOW CREATE TABLE default.{}_machinery_compaction;
+    SHOW CREATE TABLE default.USERNAME_machinery_compaction;
     
     -- REWRITE DATA FILES TO OPTIMIZE FILE SIZES (SIZE 1GB)
-    -- CALL system.rewrite_data_files(table => 'default.{}_machinery_compaction', options => map('target-file-size-bytes','1073741824'));
+    -- CALL system.rewrite_data_files(table => 'default.USERNAME_machinery_compaction', options => map('target-file-size-bytes','1073741824'));
     
     -- VALIDATE THE DATA LOCATION AGAIN AFTER REWRITE
-    SHOW CREATE TABLE default.{}_machinery_compaction;
+    SHOW CREATE TABLE default.USERNAME_machinery_compaction;
     ```
     
 ### Iceberg Expiring Snapshots
@@ -656,7 +656,7 @@ Iceberg maintains a history of table snapshots, allowing for time travel and rol
 !!! tip "IMPALA"
     ```sql
     -- FETCH THE SNAPSHOT DETAILS FOR THE TABLE
-    SELECT * FROM default.{}_machinery_compaction.snapshots;
+    SELECT * FROM default.USERNAME_machinery_compaction.snapshots;
 
     -- COLLECT THE SNAPSHOT IDS FOR THE FIRST THREE SNAPSHOTS
     -- rollback_snapshot_id_0 = snapshots_df.collect()[0].snapshot_id  
@@ -664,14 +664,14 @@ Iceberg maintains a history of table snapshots, allowing for time travel and rol
     -- rollback_snapshot_id_2 = snapshots_df.collect()[2].snapshot_id  
     
     -- EXPIRE THE SNAPSHOTS DYNAMICALLY USING THE COLLECTED SNAPSHOT IDS
-    -- CALL system.expire_snapshots(table => 'default.{0}_machinery_compaction', snapshot_ids => array({1}, {2}, {3}))
+    -- CALL system.expire_snapshots(table => 'default.USERNAME_machinery_compaction', snapshot_ids => array({1}, {2}, {3}))
     
     
     -- FETCH THE SNAPSHOT DETAILS FOR THE TABLE AFTER EXPIRING 
-        SELECT * FROM default.{}_machinery_compaction.snapshots;
+        SELECT * FROM default.USERNAME_machinery_compaction.snapshots;
     
     -- VERIFY THE CURRENT STATE OF THE TABLE
-    SELECT * FROM default.{}_machinery_compaction;
+    SELECT * FROM default.USERNAME_machinery_compaction;
     ```
 
     
