@@ -574,6 +574,106 @@ Creates a **new** Iceberg table and inserts data from an existing Parquet/Hive t
     SELECT * FROM default.USERNAME_cloudera_parquet_2;
     ```
 
+## 7. Table Maintenance
+
+### Iceberg Table Maintenance
+
+#### Iceberg Compaction
+
+Iceberg compaction is the process of merging small data files within an Iceberg table into larger files to improve query performance and reduce metadata overhead. Iceberg writes immutable files, and over time, frequent inserts, updates, and deletes can lead to many small files that impact efficiency.
+
+**Why Compaction is Important:**
+
+* Optimizes Read Performance by reducing the number of files scanned.
+* Reduces Metadata Overhead.
+* Enhances Storage Efficiency.
+
+**What's the Impact?**
+
+* Reduced Query Latency: Faster scans with fewer files.
+* Lower Metadata Management Overhead: Smaller metadata files and fewer manifest entries.
+* Potential Higher Write Costs: Compacting too frequently can increase write costs if not managed properly.
+
+**Code Example:**
+
+!!! tip "IMPALA"
+    ```sql
+    -- DROP THE TABLE IF IT EXISTS
+    DROP TABLE IF EXISTS default.{}_machinery_compaction;
+    
+    -- CREATE A NEW ICEBERG TABLE FOR CONSTRUCTION MACHINERY
+   CREATE TABLE default.{}_machinery_compaction (
+        machine_id STRING,
+        model STRING,
+        manufacturer STRING,
+        weight DOUBLE,
+        status STRING
+    )
+    USING iceberg;
+    
+    -- INSERT MULTIPLE SMALL FILES BY WRITING DATA IN MULTIPLE TRANSACTIONS
+    INSERT INTO default.{}_machinery_compaction VALUES
+        ('M001', 'Excavator X1', 'Caterpillar', 12500.5, 'Active'),
+        ('M002', 'Bulldozer B2', 'Komatsu', 14500.0, 'Inactive');
+    
+    INSERT INTO default.{}_machinery_compaction VALUES
+        ('M003', 'Crane C3', 'Liebherr', 17500.2, 'Active'),
+        ('M004', 'Dump Truck D4', 'Volvo', 22000.8, 'Active');
+
+    INSERT INTO default.{}_machinery_compaction VALUES
+        ('M005', 'Concrete Mixer CM5', 'Schwing Stetter', 9500.6, 'Inactive'),
+        ('M006', 'Loader L6', 'John Deere', 12800.4, 'Active');
+    
+    -- VALIDATE THE DATA LOCATION AFTER INSERTIONS
+    SHOW CREATE TABLE default.{}_machinery_compaction;
+    
+    -- REWRITE DATA FILES TO OPTIMIZE FILE SIZES (SIZE 1GB)
+    -- CALL system.rewrite_data_files(table => 'default.{}_machinery_compaction', options => map('target-file-size-bytes','1073741824'));
+    
+    -- VALIDATE THE DATA LOCATION AGAIN AFTER REWRITE
+    SHOW CREATE TABLE default.{}_machinery_compaction;
+    ```
+    
+#### Iceberg Expiring Snapshots
+
+Iceberg maintains a history of table snapshots, allowing for time travel and rollback. Expiring snapshots is the process of removing older snapshots that are no longer needed to free up storage and improve metadata performance.
+
+**Why is it important?**
+
+* Manages Storage Growth: Prevents unnecessary accumulation of outdated snapshots.
+* Improves Query Planning: Reduces metadata size, making query planning more efficient.
+* Controls Data Retention: Helps enforce compliance policies by retaining only necessary snapshots.
+
+**What's the Impact?**
+
+* Frees Up Storage Space: Reduces disk usage by removing old metadata and data files.
+* Improves Query Performance: Smaller metadata means faster query planning.
+* Irreversible Data Loss: Once expired, snapshots cannot be restored, so retention policies must be carefully set.
+* Cleans Up Old Manifest Files: Expiring snapshots removes outdated manifest files, keeping metadata management efficient.
+
+**Code Example:**
+
+!!! tip "IMPALA"
+    ```sql
+    -- FETCH THE SNAPSHOT DETAILS FOR THE TABLE
+    SELECT * FROM default.{}_machinery_compaction.snapshots;
+
+    -- COLLECT THE SNAPSHOT IDS FOR THE FIRST THREE SNAPSHOTS
+    -- rollback_snapshot_id_0 = snapshots_df.collect()[0].snapshot_id  
+    -- rollback_snapshot_id_1 = snapshots_df.collect()[1].snapshot_id  
+    -- rollback_snapshot_id_2 = snapshots_df.collect()[2].snapshot_id  
+    
+    -- EXPIRE THE SNAPSHOTS DYNAMICALLY USING THE COLLECTED SNAPSHOT IDS
+    -- CALL system.expire_snapshots(table => 'default.{0}_machinery_compaction', snapshot_ids => array({1}, {2}, {3}))
+    
+    
+    -- FETCH THE SNAPSHOT DETAILS FOR THE TABLE AFTER EXPIRING 
+        SELECT * FROM default.{}_machinery_compaction.snapshots;
+    
+    -- VERIFY THE CURRENT STATE OF THE TABLE
+    SELECT * FROM default.{}_machinery_compaction;
+    ```
+
     
 ## 8. Branching and Merging
 
