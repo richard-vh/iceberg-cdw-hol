@@ -495,7 +495,86 @@ Rollback in Iceberg allows you to revert the table's state to a specific snapsho
     -- CHECK DATA AFTER ROLLBACK
     SELECT * FROM default.USERNAME_european_cars_time_travel;
     ```
+## 6. Table Migration
 
+### Iceberg Table Migration
+
+Two primary methods exist for migrating existing tables (e.g. Parquet) to Iceberg:
+
+!!! info 
+    Using an in-place table migration is the fastest, most efficient way to convert tables to Iceberg tables as just the metadata is rewritten, not the data files. CTAS offers greater flexibility for creating a new table and controlling the migration process.
+
+1.  **In-Place Migration:** 
+
+In-place migration from Parquet to Iceberg allows seamless conversion without moving data or creating a new table and is almost instantaneous as only the metadata is rewritten. Data files are not affected. 
+
+![](https://raw.githubusercontent.com/richard-vh/iceberg-cdw-hol/refs/heads/main/content/assets/images/iceberg_inplace_migration.png)
+
+**Code Example:**
+
+!!! tip "IMPALA"
+    ```sql
+    -- STEP 1: CREATE A REGULAR PARQUET TABLE WITH SAMPLE DATA
+    DROP TABLE IF EXISTS default.USERNAME_cloudera_parquet;
+    
+    CREATE EXTERNAL TABLE default.USERNAME_cloudera_parquet (
+        cloudera_employee STRING,
+        cloudera_role STRING
+    )
+    STORED AS PARQUET;
+    
+    -- STEP 2: INSERT RECORDS INTO THE PARQUET TABLE
+    INSERT INTO default.USERNAME_cloudera_parquet VALUES
+        ('Joe Cur', 'SE'),
+        ('Jane Pas', 'PS');
+    
+    -- STEP 3: DISPLAY THE CONTENTS OF THE PARQUET TABLE
+    SELECT * FROM default.USERNAME_cloudera_parquet;
+    
+    -- STEP 4: DESCRIBE THE PARQUET TABLE BEFORE MIGRATION
+    DESCRIBE FORMATTED default.USERNAME_cloudera_parquet;
+    
+    -- STEP 5: CONVERT TO AN ICEBERG TABLE (Metadata Rewrite)
+    ALTER TABLE default.USERNAME_cloudera_parquet CONVERT TO ICEBERG;
+    
+    -- STEP 6 - VALIDATE CONVERSION WAS SUCCESSFUL
+    DESCRIBE FORMATTED default.USERNAME_cloudera_parquet;
+    ```
+
+2.  **CTAS Migration (CREATE TABLE AS SELECT):**
+
+Creates a **new** Iceberg table and inserts data from an existing Parquet/Hive table. This is ideal when a fresh Iceberg table is needed or more control over the migration process is desired.
+
+**Code Example:**
+
+!!! tip "IMPALA"
+    ```sql
+    -- STEP 1: CREATE A REGULAR PARQUET TABLE WITH SAMPLE DATA
+    DROP TABLE IF EXISTS default.USERNAME_cloudera_parquet_2;
+    
+    CREATE EXTERNAL TABLE default.USERNAME_cloudera_parquet_2 (
+        cloudera_employee STRING,
+        cloudera_role STRING
+    )
+    STORED AS PARQUET;
+    
+    -- STEP 2: INSERT RECORDS INTO THE PARQUET TABLE
+    INSERT INTO default.USERNAME_cloudera_parquet_2 VALUES
+        ('Joe Cur', 'SE'),
+        ('Jane Pas', 'PS');
+    
+    -- STEP 3: DISPLAY THE CONTENTS OF THE PARQUET TABLE
+    SELECT * FROM default.USERNAME_cloudera_parquet_2;
+    
+    -- STEP 4: DESCRIBE THE PARQUET TABLE BEFORE MIGRATION
+    DESCRIBE FORMATTED default.USERNAME_cloudera_parquet_2;
+    
+    -- STEP 5 - CREATE TABLE AS X
+    CREATE TABLE default.USERNAME_cloudera_iceberg_2 STORED AS ICEBERG AS
+    SELECT * FROM default.USERNAME_cloudera_parquet_2;
+    ```
+
+    
 ## 8. Branching and Merging
 
 ### Branching in Iceberg
