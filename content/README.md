@@ -349,7 +349,7 @@ You can change the partitioning strategy after the table has been created, even 
         ('A001', 'Lion', 'Savanna'),
         ('A002', 'Tiger', 'Forest');
     
-    -- SHOW TABLE DESCRIPTION (IMPALA DOESN'T SUPPORT 'DESCRIBE FORMATTED')
+    -- SHOW TABLE DESCRIPTION
     DESCRIBE FORMATTED default.USERNAME_zoo_animals_partition_evo;
     
     -- ALTER TABLE TO ADD A NEW PARTITION FIELD 'habitat'
