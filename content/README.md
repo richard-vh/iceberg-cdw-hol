@@ -164,7 +164,7 @@ Iceberg uses a **snapshot mechanism**, so deletions add a new snapshot but do no
     ('T003', 'Chelsea', 'London', 'Stamford Bridge');
     
     -- Select all data from the table
-    SELECT * FROM default.english_football_teams;
+    SELECT * FROM default.USERNAME_english_football_teams;
     
     -- Delete using Team ID 
     DELETE FROM default.USERNAME_english_football_teams WHERE team_id = 'T003';
