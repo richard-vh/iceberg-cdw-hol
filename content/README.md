@@ -62,17 +62,17 @@ An **Iceberg Table** is a table where Iceberg manages both the metadata and the 
     
     -- Create the table in Impala
     CREATE TABLE default.USERNAME_managed_countries (
-    country_code STRING,
-    country_name STRING,
-    population INT,
-    area DOUBLE
-    ) STORED AS ICEBERG;
+        country_code STRING,
+        country_name STRING,
+        population INT,
+        area DOUBLE
+    ) STORED BY ICEBERG;
     
     -- Insert data into the table
     INSERT INTO default.USERNAME_managed_countries VALUES
-    ('FR', 'France', 67391582, 643801.0),
-    ('DE', 'Germany', 83149300, 357022.0),
-    ('IT', 'Italy', 60262770, 301340.0);
+        ('FR', 'France', 67391582, 643801.0),
+        ('DE', 'Germany', 83149300, 357022.0),
+        ('IT', 'Italy', 60262770, 301340.0);
     
     -- Read data from the table
     SELECT * FROM default.USERNAME_managed_countries;
@@ -111,14 +111,13 @@ Updates modify existing records based on a condition.
         team_name STRING,
         team_city STRING,
         team_stadium STRING
-    ) STORED AS ICEBERG;
+    ) STORED BY ICEBERG;
     
     -- Inserting data into the table
-    INSERT INTO default.USERNAME_english_football_teams 
-    VALUES 
-    ('T001', 'Manchester United', 'Manchester', 'Old Trafford'),
-    ('T002', 'Liverpool', 'Liverpool', 'Anfield'),
-    ('T003', 'Chelsea', 'London', 'Stamford Bridge');
+    INSERT INTO default.USERNAME_english_football_teams VALUES 
+        ('T001', 'Manchester United', 'Manchester', 'Old Trafford'),
+        ('T002', 'Liverpool', 'Liverpool', 'Anfield'),
+        ('T003', 'Chelsea', 'London', 'Stamford Bridge');
     
     -- Select all data from the table
     SELECT * FROM default.USERNAME_english_football_teams;
