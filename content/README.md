@@ -602,7 +602,7 @@ Iceberg compaction is the process of merging small data files within an Iceberg 
     DROP TABLE IF EXISTS default.{}_machinery_compaction;
     
     -- CREATE A NEW ICEBERG TABLE FOR CONSTRUCTION MACHINERY
-   CREATE TABLE default.{}_machinery_compaction (
+    CREATE TABLE default.{}_machinery_compaction (
         machine_id STRING,
         model STRING,
         manufacturer STRING,
