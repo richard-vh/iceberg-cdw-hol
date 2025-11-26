@@ -375,6 +375,8 @@ New data inserted after the partitioning change will adhere to the new scheme.
 
 ## 5. Time Travel and Rollbacks
 
+![](https://raw.githubusercontent.com/richard-vh/iceberg-cdw-hol/refs/heads/main/content/assets/images/timetravel_rollbacks.png)
+
 ### Time Travel in Iceberg
 
 Time travel in Iceberg allows you to query a table as it existed at a specific point in time in the past. This feature leverages Iceberg's snapshot-based architecture to track all changes made to the data over time. When you perform time travel, Iceberg will provide data based on the state of the table at a specified snapshot or timestamp. Time travel is supported by specifying a timestamp or snapshotid when querying the table, which enables access to historical data without having to maintain separate copies of the data.
@@ -674,6 +676,8 @@ Iceberg maintains a history of table snapshots, allowing for time travel and rol
 
     
 ## 8. Branching and Merging
+
+![](https://raw.githubusercontent.com/richard-vh/iceberg-cdw-hol/refs/heads/main/content/assets/images/branching_merging.png)
 
 ### Branching in Iceberg
 
