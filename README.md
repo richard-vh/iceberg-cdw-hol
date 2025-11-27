@@ -1,6 +1,6 @@
 # Open Data Lakehouse - Apache Iceberg on Cloudera DataWarehouse HOL
 
-This document explores some of the core features of Apache Iceberg, including table creation, data insertion, schema evolution, and time travel.
+This Hands On Lab explores some of the core features of Apache Iceberg using Cloudera Data Warehouse, including table creation, data insertion, schema evolution, and time travel.
 
 ### Steps to manually publish the guide
 
