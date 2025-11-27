@@ -9,7 +9,7 @@ This document explores some of the core features of Apache Iceberg, including ta
         <button id="user-username-save">Update Examples</button>
         <button id="user-username-clear">Reset</button>
     </div>
-    !!! success "Username Change"
+    !!! info "Username Change"
     ```sql 
     changed_user=USERNAME;
     ```
