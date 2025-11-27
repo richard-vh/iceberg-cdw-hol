@@ -9,11 +9,13 @@ This document explores some of the core features of Apache Iceberg, including ta
         <button id="user-username-save">Update Examples</button>
         <button id="user-username-clear">Reset</button>
     </div>
-    !!! info "Username Change"
     ```sql 
     changed_user=USERNAME;
     ```
-
+!!! info "Important"
+If you are unable to use the web version of this documentation and the functionality above, ensure you change "USERNAME" in all the code to your assigned user:
+e.g. `DROP TABLE IF EXISTS default.**USERNAME**_managed_countries;` is changed to `DROP TABLE IF EXISTS default.**user001**_managed_countries;`
+    
 ## Table of Contents
 
 1.  [Creating Iceberg Tables](#1-creating-iceberg-tables)
