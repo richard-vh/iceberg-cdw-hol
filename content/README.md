@@ -700,6 +700,9 @@ Branching lets you create isolated environments to work with data (inserting, up
     INSERT INTO default.USERNAME_healthcare_patient_data VALUES 
         ('P001', 'John Doe', 45, 'Hypertension', 'Beta-blockers', 'Dr. Smith'),
         ('P002', 'Jane Roe', 50, 'Diabetes', 'Insulin', 'Dr. Johnson');
+
+    -- VERIFY THE EXISTING DATA
+    SELECT * FROM default.USERNAME_healthcare_patient_data;
     
     -- CREATE A BRANCH
     ALTER TABLE default.USERNAME_healthcare_patient_data CREATE BRANCH testing_branch;
