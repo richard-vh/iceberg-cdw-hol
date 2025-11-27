@@ -694,7 +694,7 @@ Branching lets you create isolated environments to work with data (inserting, up
         treatment STRING,
         doctor STRING
     )
-    STORED AS iceberg;
+    STORED BY ICEBERG;
     
     -- INSERT INITIAL PATIENT DATA INTO THE BASE TABLE (CREATES A SNAPSHOT)
     INSERT INTO default.USERNAME_healthcare_patient_data VALUES 
@@ -777,7 +777,7 @@ Tags label specific table versions (snapshots), making it easier to reference or
         location STRING,
         description STRING
     )
-    STORED AS iceberg;
+    STORED BY ICEBERG;
     
     -- INSERT SAMPLE DATA INTO THE LANDMARKS TABLE
     INSERT INTO default.USERNAME_belfast_landmarks VALUES 
