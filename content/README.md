@@ -32,11 +32,11 @@ In the Cloudera Control Place select the Data Warehouse tile.
 
 ![](https://raw.githubusercontent.com/richard-vh/iceberg-cdw-hol/refs/heads/main/content/assets/images/control_plane_cdw.png)
 
-In the Data Warehouse Service locate the Impala Virtual Warehouse and click on the Hue button.
+In the Data Warehouse Service locate the **Impala** Virtual Warehouse and click on the Hue button.
 
 ![](https://raw.githubusercontent.com/richard-vh/iceberg-cdw-hol/refs/heads/main/content/assets/images/cdw_hue_impala.png)
 
-This with open the Hue IDE for Impala and you're ready to proceed.
+This will open the Hue IDE for Impala and you're ready to proceed.
 
 ![](https://raw.githubusercontent.com/richard-vh/iceberg-cdw-hol/refs/heads/main/content/assets/images/cdw_impala.png)
 
@@ -682,13 +682,13 @@ In the Cloudera Control Place select the Data Warehouse tile.
 
 ![](https://raw.githubusercontent.com/richard-vh/iceberg-cdw-hol/refs/heads/main/content/assets/images/control_plane_cdw.png)
 
-In the Data Warehouse Service locate the Impala Virtual Warehouse and click on the Hue button.
+In the Data Warehouse Service locate the **Hive** Virtual Warehouse and click on the Hue button.
 
-![](https://raw.githubusercontent.com/richard-vh/iceberg-cdw-hol/refs/heads/main/content/assets/images/cdw_hue_impala.png)
+![](https://raw.githubusercontent.com/richard-vh/iceberg-cdw-hol/refs/heads/main/content/assets/images/cdw_hue_hive.png)
 
-This with open the Hue IDE for Impala and you're ready to proceed.
+This will open the Hue IDE for Hive and you're ready to proceed.
 
-![](https://raw.githubusercontent.com/richard-vh/iceberg-cdw-hol/refs/heads/main/content/assets/images/cdw_impala.png)
+![](https://raw.githubusercontent.com/richard-vh/iceberg-cdw-hol/refs/heads/main/content/assets/images/cdw_hive.png)
     
 ## 8. Branching and Merging
 
