@@ -1,2 +1,2 @@
 # gitattributes
-*.sql linguist-detectable
+*.md linguist-language=Impala
