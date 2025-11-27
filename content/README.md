@@ -14,8 +14,8 @@ This document explores some of the core features of Apache Iceberg, including ta
     ```
     
 !!! info "Important"
-If you are unable to use the web version of this documentation and the functionality above, ensure you change "USERNAME" in all the code to your assigned user:
-e.g. `DROP TABLE IF EXISTS default.USERNAME_managed_countries;` is changed to `DROP TABLE IF EXISTS default.user001_managed_countries;`
+    If you are unable to use the web version of this documentation and the functionality above, ensure you change "USERNAME" in all the code to your assigned user:<br/>
+    e.g. `DROP TABLE IF EXISTS default.USERNAME_managed_countries;` is changed to `DROP TABLE IF EXISTS default.user001_managed_countries;`
     
 ## Table of Contents
 
