@@ -808,7 +808,7 @@ Tags label specific table versions (snapshots), making it easier to reference or
     SELECT * FROM default.USERNAME_belfast_landmarks.refs;
     
     -- QUERY THE TABLE USING THE CREATED TAG TO SEE THE SNAPSHOT AT THAT SPECIFIC POINT IN TIME
-    SELECT * FROM default.USERNAME_belfast_landmarks VERSION AS OF 'MY_TAG';
+    SELECT * FROM default.USERNAME_belfast_landmarks.tag_MY_TAG;
     ```
 
 ## 10. Understanding Iceberg Storage
