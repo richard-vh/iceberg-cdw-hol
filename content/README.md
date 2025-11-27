@@ -605,7 +605,7 @@ Iceberg compaction is the process of merging small data files within an Iceberg 
         weight DOUBLE,
         status STRING
     )
-    USING iceberg;
+    STORED AS iceberg;
     
     -- INSERT MULTIPLE SMALL FILES BY WRITING DATA IN MULTIPLE TRANSACTIONS
     INSERT INTO default.USERNAME_machinery_compaction VALUES
