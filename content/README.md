@@ -1,4 +1,4 @@
-# Hands On Lab - Introduction to Apache Iceberg on Cloudera Datawarehouse
+# Hands On Lab - Introduction to Apache Iceberg on Cloudera Data Warehouse
 
 This document explores some of the core features of Apache Iceberg, including table creation, data insertion, schema evolution, and time travel.
 
