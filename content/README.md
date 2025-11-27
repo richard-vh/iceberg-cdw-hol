@@ -1,4 +1,4 @@
-# Open Data Lakehouse - Apache Iceberg Features and Management
+# Open Data Lakehouse - Cloudera Apache Iceberg Introduction Hands On Lab
 
 This document explores some of the core features of Apache Iceberg, including table creation, data insertion, schema evolution, and time travel.
 
