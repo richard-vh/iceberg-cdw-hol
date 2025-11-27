@@ -621,7 +621,7 @@ Iceberg compaction is the process of merging small data files within an Iceberg 
         ('M006', 'Loader L6', 'John Deere', 12800.4, 'Active');
     
     -- REWRITE DATA FILES TO OPTIMIZE FILE SIZES (SIZE 100MB)
-    OPTIMIZE TABLE default.user001_machinery_compaction (FILE_SIZE_THRESHOLD_MB=100);
+    OPTIMIZE TABLE default.USERNAME_machinery_compaction (FILE_SIZE_THRESHOLD_MB=100);
     ```
     
 ### Iceberg Expiring Snapshots
