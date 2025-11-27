@@ -30,9 +30,5 @@ This Hands On Lab explores some of the core features of Apache Iceberg using Clo
    mkdocs serve
    ```
 
-   Open `http://127.0.0.1:8000` in your browser to view the guide.
+* Open `http://127.0.0.1:8000` in your browser to view the guide.
 
-
-   ```bash
-   mkdocs gh-deploy -r origin --no-history
-   ```
