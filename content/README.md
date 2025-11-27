@@ -732,22 +732,23 @@ Merging consolidates the changes made in a branch back into the main dataset. On
 
 !!! tip "HIVE"
     ```sql
-    -- INSERT MORE PATIENT DATA INTO THE BASE TABLE (CREATES A SNAPSHOT)
-    INSERT INTO default.USERNAME_healthcare_patient_data VALUES 
-        ('P001', 'John Roe', 415, 'Hypertension', 'Beta-blockers', 'Dr. Smith'),
-        ('P002', 'Jane Poe', 511, 'Diabetes', 'Insulin', 'Dr. Johnson');
+    -- VIEW THE MAIN TABLE DATA
+    SELECT * FROM default.USERNAME_healthcare_patient_data;
+    
+    -- VIEW THE BRANCH TABLE DATA
+    SELECT * FROM default.USERNAME_healthcare_patient_data.branch_testing_branch;
     
     -- MERGE THE BRANCH BACK INTO THE BASE TABLE
     MERGE INTO default.USERNAME_healthcare_patient_data AS base
-        USING default.USERNAME_healthcare_patient_data.branch_testing_branch AS branch
-        ON base.patient_id = branch.patient_id
-        WHEN MATCHED THEN UPDATE SET base.patient_name = branch.patient_name,
-                                     base.age = branch.age,
-                                     base.diagnosis = branch.diagnosis,
-                                     base.treatment = branch.treatment,
-                                     base.doctor = branch.doctor
-        WHEN NOT MATCHED THEN INSERT (patient_id, patient_name, age, diagnosis, treatment, doctor)
-        VALUES (branch.patient_id, branch.patient_name, branch.age, branch.diagnosis, branch.treatment, branch.doctor);
+    USING default.USERNAME_healthcare_patient_data.branch_testing_branch AS branch
+    ON base.patient_id = branch.patient_id
+    WHEN MATCHED THEN UPDATE SET patient_name = branch.patient_name,
+                                 age = branch.age,
+                                 diagnosis = branch.diagnosis,
+                                 treatment = branch.treatment,
+                                 doctor = branch.doctor
+    WHEN NOT MATCHED THEN INSERT (patient_id, patient_name, age, diagnosis, treatment, doctor)
+    VALUES (branch.patient_id, branch.patient_name, branch.age, branch.diagnosis, branch.treatment, branch.doctor);
     
     -- VIEW THE MERGED TABLE DATA
     SELECT * FROM default.USERNAME_healthcare_patient_data;
