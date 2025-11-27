@@ -645,20 +645,18 @@ Iceberg maintains a history of table snapshots, allowing for time travel and rol
 
 !!! tip "IMPALA"
     ```sql
-    -- FETCH THE SNAPSHOT DETAILS FOR THE TABLE
+    -- VIEW ALL SNAPSHOTS FOR THE TABLE
     SELECT * FROM default.USERNAME_machinery_compaction.snapshots;
-
-    -- COLLECT THE SNAPSHOT IDS FOR THE FIRST THREE SNAPSHOTS
-    -- rollback_snapshot_id_0 = snapshots_df.collect()[0].snapshot_id  
-    -- rollback_snapshot_id_1 = snapshots_df.collect()[1].snapshot_id  
-    -- rollback_snapshot_id_2 = snapshots_df.collect()[2].snapshot_id  
     
-    -- EXPIRE THE SNAPSHOTS DYNAMICALLY USING THE COLLECTED SNAPSHOT IDS
-    -- CALL system.expire_snapshots(table => 'default.USERNAME_machinery_compaction', snapshot_ids => array({1}, {2}, {3}))
+    -- GET THE LATEST(NEWEST) SNAPSHOT TIMESTAMP FOR THE TABLE
+    SELECT MAX(committed_at) FROM default.USERNAME_machinery_compaction.snapshots;
     
+    -- EXPIRE ALL SNAPSHOTS ON THE TABLE APART FROM THE LATEST. COPY AND PASTE THE TIMESTAMP RETURNED FROM THE QUERY ABOVE TO THE STATMENT BELOW.
+    -- SNAPSHOTS CAN BE EXPIRED BY SNAPSHOT ID OR IN THIS CASE ANYTHING OLDER THAN THE TIMESTAMP PROVIDED
+    ALTER TABLE  default.USERNAME_machinery_compaction EXECUTE EXPIRE_SNAPSHOTS('<timestamp_from_query_above>')
     
-    -- FETCH THE SNAPSHOT DETAILS FOR THE TABLE AFTER EXPIRING 
-        SELECT * FROM default.USERNAME_machinery_compaction.snapshots;
+    -- VIEW ALL SNAPSHOTS FOR THE TABLE AFTER EXPIRING 
+    SELECT * FROM default.USERNAME_machinery_compaction.snapshots;
     
     -- VERIFY THE CURRENT STATE OF THE TABLE
     SELECT * FROM default.USERNAME_machinery_compaction;
