@@ -66,7 +66,7 @@ An **Iceberg Table** is a table where Iceberg manages both the metadata and the 
         country_name STRING,
         population INT,
         area DOUBLE
-    ) STORED AS ICEBERG;
+    ) STORED BY ICEBERG;
     
     -- Insert data into the table
     INSERT INTO default.USERNAME_managed_countries VALUES
@@ -111,7 +111,7 @@ Updates modify existing records based on a condition.
         team_name STRING,
         team_city STRING,
         team_stadium STRING
-    ) STORED AS ICEBERG;
+    ) STORED BY ICEBERG;
     
     -- Inserting data into the table
     INSERT INTO default.USERNAME_english_football_teams VALUES 
@@ -153,7 +153,7 @@ Iceberg uses a **snapshot mechanism**, so deletions add a new snapshot but do no
         team_name STRING,
         team_city STRING,
         team_stadium STRING
-    ) STORED AS ICEBERG;
+    ) STORED BY ICEBERG;
     
     -- Inserting data into the table
     INSERT INTO default.USERNAME_english_football_teams VALUES 
@@ -213,7 +213,7 @@ Copy-on-Write (COW) is where instead of modifying data directly, the system crea
         population BIGINT,
         area_km2 DOUBLE,
         last_updated TIMESTAMP
-    ) STORED AS ICEBERG
+    ) STORED BY ICEBERG
     TBLPROPERTIES (
         'write.format.default'='orc', 
         'write.delete.mode'='copy-on-write',  -- Enable COW for delete operations
@@ -243,7 +243,7 @@ Merge-on-Read (MOR) is where, instead of rewriting large files for every modific
         population BIGINT,
         area_km2 DOUBLE,
         last_updated TIMESTAMP
-    ) STORED AS ICEBERG
+    ) STORED BY ICEBERG
     TBLPROPERTIES (
         'format-version'='2',
         'write.format.default'='parquet',
@@ -286,7 +286,7 @@ Schema evolution in Iceberg allows you to modify the structure of your tables ov
     CREATE TABLE default.USERNAME_zoo_animals_schema_evo (
         animal_id STRING,
         animal_name STRING
-    ) STORED AS ICEBERG;
+    ) STORED BY ICEBERG;
     
     -- Insert sample data
     INSERT INTO default.USERNAME_zoo_animals_schema_evo VALUES 
@@ -397,7 +397,7 @@ Time travel in Iceberg allows you to query a table as it existed at a specific p
         car_model STRING,
         car_country STRING
     )
-    STORED AS ICEBERG;
+    STORED BY ICEBERG;
     
     -- INSERT INITIAL DATA
     INSERT INTO default.USERNAME_european_cars_time_travel VALUES 
@@ -458,7 +458,7 @@ Rollback in Iceberg allows you to revert the table's state to a specific snapsho
         car_model STRING,
         car_country STRING
     )
-    STORED AS ICEBERG;
+    STORED BY ICEBERG;
     
     -- INSERT INITIAL DATA
     INSERT INTO default.USERNAME_european_cars_time_travel VALUES 
@@ -568,7 +568,7 @@ Creates a **new** Iceberg table and inserts data from an existing Parquet/Hive t
     DESCRIBE FORMATTED default.USERNAME_cloudera_parquet_2;
     
     -- STEP 5 - CREATE TABLE AS X
-    CREATE TABLE default.USERNAME_cloudera_iceberg_2 STORED AS ICEBERG AS
+    CREATE TABLE default.USERNAME_cloudera_iceberg_2 STORED BY ICEBERG AS
     SELECT * FROM default.USERNAME_cloudera_parquet_2;
     ```
 
@@ -605,7 +605,7 @@ Iceberg compaction is the process of merging small data files within an Iceberg 
         weight DOUBLE,
         status STRING
     )
-    STORED AS iceberg;
+    STORED BY ICEBERG;
     
     -- INSERT MULTIPLE SMALL FILES BY WRITING DATA IN MULTIPLE TRANSACTIONS
     INSERT INTO default.USERNAME_machinery_compaction VALUES
