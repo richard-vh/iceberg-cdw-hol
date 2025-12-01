@@ -51,7 +51,7 @@ This will open the Hue IDE for Impala and you're ready to proceed.
 
 ### What is an Iceberg table?
 
-An **Iceberg Table** is a table where Iceberg manages both the metadata and the data itself. It is a fully integrated table that Iceberg can track and manage. When you drop an Iceberg Table, both the metadata and the data are removed.
+An **Iceberg Table** is a table where Iceberg manages both the metadata and the data itself. It is a fully integrated table that Iceberg can track and manage. When you drop an Iceberg table, both the metadata and the data are removed.
 
 ### Use an Iceberg Table when:
 * You need Iceberg to fully handle both the data and metadata.
@@ -72,7 +72,7 @@ An **Iceberg Table** is a table where Iceberg manages both the metadata and the 
 
 
 !!! note
-    By default, when creating an Iceberg table, it will be a **Copy-on-Write (COW)** table. You can explicitly specify the table type as Copy-on-Write (COW) or Merge-on-Write (MOR) using table properties.
+    By default, when creating an Iceberg table, it will be a **Merge-on-Write (MOR)** table. You can explicitly specify the table type as Copy-on-Write (COW) or Merge-on-Write (MOR) using table properties.
 
 ### Table Creation Example
 
