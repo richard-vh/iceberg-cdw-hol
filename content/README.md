@@ -674,7 +674,7 @@ Iceberg maintains a history of table snapshots, allowing for time travel and rol
     
     -- EXPIRE ALL SNAPSHOTS ON THE TABLE APART FROM THE LATEST. COPY AND PASTE THE TIMESTAMP RETURNED FROM THE QUERY ABOVE TO THE STATMENT BELOW.
     -- SNAPSHOTS CAN BE EXPIRED BY SNAPSHOT ID OR IN THIS CASE ANYTHING OLDER THAN THE TIMESTAMP PROVIDED
-    ALTER TABLE  default.USERNAME_machinery_compaction EXECUTE EXPIRE_SNAPSHOTS('<timestamp_from_query_above>')
+    ALTER TABLE  default.USERNAME_machinery_compaction EXECUTE EXPIRE_SNAPSHOTS('<timestamp_from_query_above>');
     
     -- VIEW ALL SNAPSHOTS FOR THE TABLE AFTER EXPIRING 
     SELECT * FROM default.USERNAME_machinery_compaction.snapshots;
