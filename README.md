@@ -27,8 +27,8 @@ This Hands On Lab explores some of the core features of Apache Iceberg using Clo
 * Run the following command to test your guide locally:
 
    ```bash
-   mkdocs serve
+   mkdocs serve -a 0.0.0.0:8000
    ```
 
-* Open `http://127.0.0.1:8000` in your browser to view the guide.
+* Open `http://<hostname>:8000` in your browser to view the guide.
 
