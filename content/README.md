@@ -396,7 +396,7 @@ New data inserted after the partitioning change will adhere to the new scheme.
 
 ### Time Travel in Iceberg
 
-Time travel in Iceberg allows you to query a table as it existed at a specific point in time in the past. This feature leverages Iceberg's snapshot-based architecture to track all changes made to the data over time. When you perform time travel, Iceberg will provide data based on the state of the table at a specified snapshot or timestamp. Time travel is supported by specifying a timestamp or snapshotid when querying the table, which enables access to historical data without having to maintain separate copies of the data.
+Time travel in Iceberg allows you to query a table as it existed at a specific point in time in the past. This feature leverages Iceberg's snapshot-based architecture to track all changes made to the data over time. When you perform time travel, Iceberg will provide data based on the state of the table at a specified snapshot or timestamp. Time travel is supported by specifying a timestamp or snapshot id when querying the table, which enables access to historical data without having to maintain separate copies of the data.
 
 **Time Travel Benefits:**
 
@@ -461,7 +461,7 @@ Rollback in Iceberg allows you to revert the table's state to a specific snapsho
 
 **Key Points on Rollback:**
 
-* Rollback to a Snapshot: You can roll back the table by specifying a snapshotid that corresponds to the point in time you wish to revert to.
+* Rollback to a Snapshot: You can roll back the table by specifying a snapshot id that corresponds to the point in time you wish to revert to.
 * How it works: The rollback operation rewrites the table to the state of the specified snapshot, effectively "reverting" any changes made after that snapshot.
 * Usage: Rollback can be useful in production environments where you need to ensure data integrity and recover from accidental modifications.
 
