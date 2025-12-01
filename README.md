@@ -32,4 +32,4 @@ This Hands On Lab explores some of the core features of Apache Iceberg using Clo
 
 * Open `http://<hostname>:8000` in your browser to view the guide.
 
-![](https://raw.githubusercontent.com/richard-vh/iceberg-cdw-hol/refs/heads/main/content/assets/images/docs.png)
+![](https://raw.githubusercontent.com/richard-vh/iceberg-cdw-hol/refs/heads/main/content/assets/images/hol_docs.png)
