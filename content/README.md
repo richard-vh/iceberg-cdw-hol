@@ -45,7 +45,7 @@ Enter your assigned username and the password provided. Click the **Sign In** bu
 
 This will open the Cloudera Control Plane. You can toggle between a simple and new UI using the toggle switch at the top of the screen depending on which view you prefer to use.
 
-![](https://raw.githubusercontent.com/richard-vh/iceberg-cdw-hol/refs/heads/main/content/assets/images/toggel_new_ui.png)
+![](https://raw.githubusercontent.com/richard-vh/iceberg-cdw-hol/refs/heads/main/content/assets/images/toggle_new_ui.png)
 
 ## Open Impala In Cloudera Data Warehouse Service
 
