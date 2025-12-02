@@ -33,6 +33,18 @@ This document explores some of the core features of Apache Iceberg, including ta
 
 ---
 
+## Logon to the Lab Enviornment
+
+Log in to the Lab environment using this link [Lab Environment](https://login.cdpworkshops.cloudera.com/auth/realms/field-marketing-emea/protocol/saml/clients/cdp-sso).
+
+![](https://raw.githubusercontent.com/richard-vh/iceberg-cdw-hol/refs/heads/main/content/assets/images/logon.png)
+
+Enter your assigned username and the password provided. Click the **Sign In** button.
+
+This will open the Cloudera Control Plane. You can toggle between a simple and new UI using the toggle switch at the top of the screen depending on which view you prefer to use.
+
+![](https://raw.githubusercontent.com/richard-vh/iceberg-cdw-hol/refs/heads/main/content/assets/images/toggel_new_ui.png)
+
 ## Open Impala In Cloudera Data Warehouse Service
 
 In the Cloudera Control Place select the Data Warehouse tile.
