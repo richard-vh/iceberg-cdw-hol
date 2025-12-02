@@ -36,7 +36,8 @@ This document explores some of the core features of Apache Iceberg, including ta
 ## Logon to the Lab Enviornment
 
 Log in to the Lab environment using this link [Lab Environment](https://login.cdpworkshops.cloudera.com/auth/realms/field-marketing-emea/protocol/saml/clients/cdp-sso).
-https://login.cdpworkshops.cloudera.com/auth/realms/field-marketing-emea/protocol/saml/clients/cdp-sso
+
+`https://login.cdpworkshops.cloudera.com/auth/realms/field-marketing-emea/protocol/saml/clients/cdp-sso`
 
 ![](https://raw.githubusercontent.com/richard-vh/iceberg-cdw-hol/refs/heads/main/content/assets/images/logon.png)
 
